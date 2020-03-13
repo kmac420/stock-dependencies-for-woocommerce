@@ -1,7 +1,7 @@
 <?php
 
 /*
-Plugin Name: WooCommerce Required Stock
+Plugin Name: WooCommerce Stock Dependency
 Plugin URI: https://kef.ca
 Description: 
 Version: 0.1

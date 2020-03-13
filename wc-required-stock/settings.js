@@ -3,14 +3,14 @@
  * @param {int} x
  * @param {Element} productPricingElement
  *
- * Create a div to hold the product required stock settings
+ * Create a div to hold the product stock dependency settings
  *
  */
 
-function wcrs_createProductSettingsElement(productPricingElement) {
+function wcsd_createProductSettingsElement(productPricingElement) {
   var d = document.createElement("div");
-  d.className = "wcrs_product_settings show_if_simple options_group";
-  d.id = "wcrs_product_settings";
+  d.className = "wcsd_product_settings show_if_simple options_group";
+  d.id = "wcsd_product_settings";
   productPricingElement.appendChild(d);
   return d;
 }
@@ -20,14 +20,14 @@ function wcrs_createProductSettingsElement(productPricingElement) {
  * @param {int} x
  * @param {Element} variablePricingElement
  *
- * Create a div to hold the variation required stock settings
+ * Create a div to hold the variation stock dependency settings
  *
  */
 
-function wcrs_createVariationSettingsElement(x, variablePricingElement) {
+function wcsd_createVariationSettingsElement(x, variablePricingElement) {
   var d = document.createElement("div");
-  d.className = "wcrs_variation_settings";
-  d.id = "wcrs_variation_settings-" + x;
+  d.className = "wcsd_variation_settings";
+  d.id = "wcsd_variation_settings-" + x;
   variablePricingElement.appendChild(d);
   return d;
 }
@@ -38,14 +38,14 @@ function wcrs_createVariationSettingsElement(x, variablePricingElement) {
  * @param {Element} productSettingsElement
  * @param {boolean} enabled
  *
- * Create a div to hold the product required stock setting rows
+ * Create a div to hold the product stock dependency setting rows
  *
  */
 
-function wcrs_createProductStockSettings(productSettingsElement, enabled) {
+function wcsd_createProductStockSettings(productSettingsElement, enabled) {
   var d = document.createElement("div");
-  d.className = "wcrs_product_stock_settings";
-  d.id = "wcrs_product_stock_settings";
+  d.className = "wcsd_product_stock_settings";
+  d.id = "wcsd_product_stock_settings";
   if (!enabled) {
     d.style.display = "none";
   }
@@ -59,18 +59,18 @@ function wcrs_createProductStockSettings(productSettingsElement, enabled) {
  * @param {Element} variationSettingsElement
  * @param {boolean} enabled
  *
- * Create a div to hold the variation required stock setting rows
+ * Create a div to hold the variation stock dependency setting rows
  *
  */
 
-function wcrs_createVariationStockSettings(
+function wcsd_createVariationStockSettings(
   x,
   variationSettingsElement,
   enabled
 ) {
   var d = document.createElement("div");
-  d.className = "wcrs_variation_stock_settings";
-  d.id = "wcrs_variation_stock_settings-" + x;
+  d.className = "wcsd_variation_stock_settings";
+  d.id = "wcsd_variation_stock_settings-" + x;
   if (!enabled) {
     d.style.display = "none";
   }
@@ -83,28 +83,28 @@ function wcrs_createVariationStockSettings(
  * @param {array} values
  * @param {Element} productStockElement
  *
- * Create the required stock enabled checkbox
+ * Create the stock dependency enabled checkbox
  *
  */
 
-function wcrs_createProductEnabledCheckboxInput(values, productStockElement) {
+function wcsd_createProductEnabledCheckboxInput(values, productStockElement) {
   var p = document.createElement("P");
-  p.className = "wcrs_product_enabled form-field show-if-simple";
-  p.id = "wcrs_product_enabled";
+  p.className = "wcsd_product_enabled form-field show-if-simple";
+  p.id = "wcsd_product_enabled";
   var checkbox = document.createElement("input");
   checkbox.type = "checkbox";
   checkbox.name = "enabled";
   checkbox.value = "enabled";
-  checkbox.id = "wcrs_product_required_stock_enabled";
+  checkbox.id = "wcsd_product_stock_dependency_enabled";
   checkbox.checked = values.enabled;
-  // checkbox.onclick = wcrs_enableCheckboxClick;
+  // checkbox.onclick = wcsd_enableCheckboxClick;
   checkbox.onclick = (function(x) {
     return function() {
       var stockSettingsElement = document.getElementById(
-        `wcrs_product_stock_settings`
+        `wcsd_product_stock_settings`
       );
       var stockSettingsAddRowLink = document.getElementById(
-        `wcrs_product_add_stock_link`
+        `wcsd_product_add_stock_link`
       );
       if (this.checked == true) {
         stockSettingsElement.style.display = "block";
@@ -113,13 +113,13 @@ function wcrs_createProductEnabledCheckboxInput(values, productStockElement) {
         stockSettingsElement.style.display = "none";
         stockSettingsAddRowLink.style.display = "none";
       }
-      runOnChange = wcrs_productOnChange();
+      runOnChange = wcsd_productOnChange();
     };
   })();
-  // checkbox.onchange = wcrs_productOnChange();
+  // checkbox.onchange = wcsd_productOnChange();
   var label = document.createElement("label");
   label.htmlFor = checkbox.id;
-  label.appendChild(document.createTextNode("Enable required stock"));
+  label.appendChild(document.createTextNode("Enable stock dependency"));
   p.appendChild(label);
   p.appendChild(checkbox);
   productStockElement.appendChild(p);
@@ -132,32 +132,32 @@ function wcrs_createProductEnabledCheckboxInput(values, productStockElement) {
  * @param {array} values
  * @param {Element} variationStockElement
  *
- * Create the required stock enabled checkbox
+ * Create the stock dependency enabled checkbox
  *
  */
 
-function wcrs_createVariationEnabledCheckboxInput(
+function wcsd_createVariationEnabledCheckboxInput(
   x,
   values,
   variationStockElement
 ) {
   var p = document.createElement("P");
-  p.className = "wcrs_variation_enabled form-row form-row-full options";
-  p.id = "wcrs_variation_enabled-" + x;
+  p.className = "wcsd_variation_enabled form-row form-row-full options";
+  p.id = "wcsd_variation_enabled-" + x;
   var checkbox = document.createElement("input");
   checkbox.type = "checkbox";
   checkbox.name = x + "-enabled";
   checkbox.value = "enabled";
-  checkbox.id = "wcrs_variation_required_stock-" + x + "-enabled";
+  checkbox.id = "wcsd_variation_stock_dependency-" + x + "-enabled";
   checkbox.checked = values.enabled;
-  // checkbox.onclick = wcrs_enableCheckboxClick;
+  // checkbox.onclick = wcsd_enableCheckboxClick;
   checkbox.onclick = (function(x) {
     return function() {
       var stockSettingsElement = document.getElementById(
-        `wcrs_variation_stock_settings-${x}`
+        `wcsd_variation_stock_settings-${x}`
       );
       var stockSettingsAddRowLink = document.getElementById(
-        `wcrs_variation_add_stock_link-${x}`
+        `wcsd_variation_add_stock_link-${x}`
       );
       if (this.checked == true) {
         stockSettingsElement.style.display = "block";
@@ -166,13 +166,13 @@ function wcrs_createVariationEnabledCheckboxInput(
         stockSettingsElement.style.display = "none";
         stockSettingsAddRowLink.style.display = "none";
       }
-      runOnChange = wcrs_variationOnChange(this);
+      runOnChange = wcsd_variationOnChange(this);
     };
   })(x);
-  // checkbox.onchange = wcrs_variationOnChange(this);
+  // checkbox.onchange = wcsd_variationOnChange(this);
   var label = document.createElement("label");
   label.htmlFor = checkbox.id;
-  label.appendChild(document.createTextNode("Enable required stock"));
+  label.appendChild(document.createTextNode("Enable stock dependency"));
   p.appendChild(label);
   p.appendChild(checkbox);
   variationStockElement.appendChild(p);
@@ -185,28 +185,28 @@ function wcrs_createVariationEnabledCheckboxInput(
  * @param {array} values
  * @param {Element} productStockRow
  *
- * Create the required stock sku field
+ * Create the stock dependency sku field
  *
  */
 
-function wcrs_createProductSkuTextInput(y, values, productStockRow) {
+function wcsd_createProductSkuTextInput(y, values, productStockRow) {
   var p = document.createElement("P");
   p.className =
-    "form-field wcrs_product_required_stock_p wcrs_product_required_stock_sku form-row form-row-first";
-  p.id = "wcrs_product_required_stock_p-" + y + "-sku";
+    "form-field wcsd_product_stock_dependency_p wcsd_product_stock_dependency_sku form-row form-row-first";
+  p.id = "wcsd_product_stock_dependency_p-" + y + "-sku";
   var input = document.createElement("input");
   input.setAttribute("type", "text");
   input.defaultValue = values.sku;
-  input.className = "wcrs_product_required_stock_sku";
-  input.id = "wcrs_product_required_stock-" + y + "-sku";
+  input.className = "wcsd_product_stock_dependency_sku";
+  input.id = "wcsd_product_stock_dependency-" + y + "-sku";
   input.onchange = (function() {
     return function() {
-      runOnChange = wcrs_productOnChange();
+      runOnChange = wcsd_productOnChange();
     };
   })();
   var label = document.createElement("label");
   label.htmlFor = input.id;
-  label.className = "wcrs_product_required_stock_sku_label";
+  label.className = "wcsd_product_stock_dependency_sku_label";
   label.appendChild(document.createTextNode("Required SKU"));
   p.appendChild(label);
   p.appendChild(input);
@@ -221,28 +221,28 @@ function wcrs_createProductSkuTextInput(y, values, productStockRow) {
  * @param {array} values
  * @param {Element} variationStockRow
  *
- * Create the required stock sku field
+ * Create the stock dependency sku field
  *
  */
 
-function wcrs_createVariationSkuTextInput(x, y, values, variationStockRow) {
+function wcsd_createVariationSkuTextInput(x, y, values, variationStockRow) {
   var p = document.createElement("P");
   p.className =
-    "form-field wcrs_variable_required_stock_p wcrs_variable_required_stock_sku form-row form-row-first";
-  p.id = "wcrs_variation_required_stock_p-" + x + "-" + y + "-sku";
+    "form-field wcsd_variable_stock_dependency_p wcsd_variable_stock_dependency_sku form-row form-row-first";
+  p.id = "wcsd_variation_stock_dependency_p-" + x + "-" + y + "-sku";
   var input = document.createElement("input");
   input.setAttribute("type", "text");
   input.defaultValue = values.sku;
-  input.className = "wcrs_variation_required_stock_sku";
-  input.id = "wcrs_variation_required_stock-" + x + "-" + y + "-sku";
+  input.className = "wcsd_variation_stock_dependency_sku";
+  input.id = "wcsd_variation_stock_dependency-" + x + "-" + y + "-sku";
   input.onchange = (function(x) {
     return function() {
-      runOnChange = wcrs_variationOnChange(this);
+      runOnChange = wcsd_variationOnChange(this);
     };
   })(x);
   var label = document.createElement("label");
   label.htmlFor = input.id;
-  label.className = "wcrs_variation_required_stock_sku_label";
+  label.className = "wcsd_variation_stock_dependency_sku_label";
   label.appendChild(document.createTextNode("Required SKU"));
   p.appendChild(label);
   p.appendChild(input);
@@ -256,30 +256,30 @@ function wcrs_createVariationSkuTextInput(x, y, values, variationStockRow) {
  * @param {array} values
  * @param {Element} productStockRow
  *
- * Create the required stock quantity field
+ * Create the stock dependency quantity field
  *
  */
 
-function wcrs_createProductQtyTextInput(y, values, productStockRow) {
+function wcsd_createProductQtyTextInput(y, values, productStockRow) {
   var p = document.createElement("P");
   p.className =
-    "form-field wcrs_product_required_stock_p wcrs_product_required_stock_qty form-row form-row-last";
-  p.id = "wcrs_product_required_stock_p-" + y + "-qty";
+    "form-field wcsd_product_stock_dependency_p wcsd_product_stock_dependency_qty form-row form-row-last";
+  p.id = "wcsd_product_stock_dependency_p-" + y + "-qty";
   var input = document.createElement("input");
   input.setAttribute("type", "number");
   input.setAttribute("min", "1");
   input.setAttribute("step", "1");
   input.defaultValue = Object.is(values.qty, undefined) ? 1 : values.qty;
-  input.className = "wcrs_product_required_stock_qty";
-  input.id = "wcrs_product_required_stock-" + y + "-qty";
+  input.className = "wcsd_product_stock_dependency_qty";
+  input.id = "wcsd_product_stock_dependency-" + y + "-qty";
   input.onchange = (function() {
     return function() {
-      runOnChange = wcrs_productOnChange();
+      runOnChange = wcsd_productOnChange();
     };
   })();
   var label = document.createElement("label");
   label.htmlFor = input.id;
-  label.className = "wcrs_product_required_stock_qty_label";
+  label.className = "wcsd_product_stock_dependency_qty_label";
   label.appendChild(document.createTextNode("Qty"));
   p.appendChild(label);
   p.appendChild(input);
@@ -294,30 +294,30 @@ function wcrs_createProductQtyTextInput(y, values, productStockRow) {
  * @param {array} values
  * @param {Element} variationStockRow
  *
- * Create the required stock quantity field
+ * Create the stock dependency quantity field
  *
  */
 
-function wcrs_createVariationQtyTextInput(x, y, values, variationStockRow) {
+function wcsd_createVariationQtyTextInput(x, y, values, variationStockRow) {
   var p = document.createElement("P");
   p.className =
-    "form-field wcrs_variable_required_stock_p wcrs_variable_required_stock_qty form-row form-row-last";
-  p.id = "wcrs_variation_required_stock_p-" + x + "-" + y + "-qty";
+    "form-field wcsd_variable_stock_dependency_p wcsd_variable_stock_dependency_qty form-row form-row-last";
+  p.id = "wcsd_variation_stock_dependency_p-" + x + "-" + y + "-qty";
   var input = document.createElement("input");
   input.setAttribute("type", "number");
   input.setAttribute("min", "1");
   input.setAttribute("step", "1");
   input.defaultValue = Object.is(values.qty, undefined) ? 1 : values.qty;
-  input.className = "wcrs_variation_required_stock_qty";
-  input.id = "wcrs_variation_required_stock-" + x + "-" + y + "-qty";
+  input.className = "wcsd_variation_stock_dependency_qty";
+  input.id = "wcsd_variation_stock_dependency-" + x + "-" + y + "-qty";
   input.onchange = (function(x) {
     return function() {
-      runOnChange = wcrs_variationOnChange(this);
+      runOnChange = wcsd_variationOnChange(this);
     };
   })(x);
   var label = document.createElement("label");
   label.htmlFor = input.id;
-  label.className = "wcrs_variation_required_stock_qty_label";
+  label.className = "wcsd_variation_stock_dependency_qty_label";
   label.appendChild(document.createTextNode("Qty"));
   p.appendChild(label);
   p.appendChild(input);
@@ -329,10 +329,10 @@ function wcrs_createVariationQtyTextInput(x, y, values, variationStockRow) {
  *
  * @param {*} productStockRow
  *
- * Remove the product required stock row
+ * Remove the product stock dependency row
  *
  */
-function wcrs_productRemoveRequiredStock(productStockRow) {
+function wcsd_productRemoveRequiredStock(productStockRow) {
   console.log(productStockRow);
   productStockRow.parentNode.removeChild(productStockRow);
   return true;
@@ -342,10 +342,10 @@ function wcrs_productRemoveRequiredStock(productStockRow) {
  *
  * @param {*} variationStockRow
  *
- * Remove the variation required stock row
+ * Remove the variation stock dependency row
  *
  */
-function wcrs_variationRemoveRequiredStock(variationStockRow) {
+function wcsd_variationRemoveRequiredStock(variationStockRow) {
   console.log(variationStockRow);
   jQuery(variationStockRow)
     .closest(".woocommerce_variation")
@@ -365,24 +365,24 @@ function wcrs_variationRemoveRequiredStock(variationStockRow) {
  * @param {*} y
  * @param {*} productStockRow
  *
- * Create a link that can be used to remove the required stock row
- * and add it to the end of the product required stock row
+ * Create a link that can be used to remove the stock dependency row
+ * and add it to the end of the product stock dependency row
  *
  */
 
-function wcrs_productAddRemoveStockLink(y, productStockRow) {
+function wcsd_productAddRemoveStockLink(y, productStockRow) {
   var p = document.createElement("P");
-  p.className = "wcrs_product_remove_stock_link_p form-row";
-  p.id = "wcrs_product_remove_stock_link-" + y;
+  p.className = "wcsd_product_remove_stock_link_p form-row";
+  p.id = "wcsd_product_remove_stock_link-" + y;
   var a = document.createElement("a");
   var link = document.createTextNode("Remove");
   a.appendChild(link);
-  a.title = "Remove required stock";
+  a.title = "Remove stock dependency";
   a.href = "";
   a.onclick = (function() {
     return function() {
-      runOnClick = wcrs_productRemoveRequiredStock(productStockRow);
-      updateProductStock = wcrs_variationOnChange(this);
+      runOnClick = wcsd_productRemoveRequiredStock(productStockRow);
+      updateProductStock = wcsd_variationOnChange(this);
       return false;
     };
   })();
@@ -397,24 +397,24 @@ function wcrs_productAddRemoveStockLink(y, productStockRow) {
  * @param {*} y
  * @param {*} variationStockRow
  *
- * Create a link that can be used to remove the required stock row
- * and add it to the end of the variation required stock row
+ * Create a link that can be used to remove the stock dependency row
+ * and add it to the end of the variation stock dependency row
  *
  */
 
-function wcrs_variationAddRemoveStockLink(x, y, variationStockRow) {
+function wcsd_variationAddRemoveStockLink(x, y, variationStockRow) {
   var p = document.createElement("P");
-  p.className = "wcrs_variation_remove_stock_link_p form-row";
-  p.id = "wcrs_variation_remove_stock_link-" + x + "-" + y;
+  p.className = "wcsd_variation_remove_stock_link_p form-row";
+  p.id = "wcsd_variation_remove_stock_link-" + x + "-" + y;
   var a = document.createElement("a");
   var link = document.createTextNode("Remove");
   a.appendChild(link);
-  a.title = "Remove required stock";
+  a.title = "Remove stock dependency";
   a.href = "";
   a.onclick = (function(x) {
     return function() {
-      runOnClick = wcrs_variationRemoveRequiredStock(variationStockRow);
-      updateVariationStock = wcrs_variationOnChange(this);
+      runOnClick = wcsd_variationRemoveRequiredStock(variationStockRow);
+      updateVariationStock = wcsd_variationOnChange(this);
       return false;
     };
   })(x, y);
@@ -432,10 +432,10 @@ function wcrs_variationAddRemoveStockLink(x, y, variationStockRow) {
  *
  */
 
-function wcrs_createProductStockRow(y, productStockElement) {
+function wcsd_createProductStockRow(y, productStockElement) {
   var d = document.createElement("div");
-  d.className = "wcrs_product_stock_settings_row";
-  d.id = `wcrs_product_stock_settings_row-${y}`;
+  d.className = "wcsd_product_stock_settings_row";
+  d.id = `wcsd_product_stock_settings_row-${y}`;
   productStockElement.appendChild(d);
   return d;
 }
@@ -450,10 +450,10 @@ function wcrs_createProductStockRow(y, productStockElement) {
  *
  */
 
-function wcrs_createVariationStockRow(x, y, variationStockElement) {
+function wcsd_createVariationStockRow(x, y, variationStockElement) {
   var d = document.createElement("div");
-  d.className = "wcrs_variation_stock_settings_row";
-  d.id = `wcrs_variation_stock_settings_row-${x}-${y}`;
+  d.className = "wcsd_variation_stock_settings_row";
+  d.id = `wcsd_variation_stock_settings_row-${x}-${y}`;
   variationStockElement.appendChild(d);
   return d;
 }
@@ -462,14 +462,14 @@ function wcrs_createVariationStockRow(x, y, variationStockElement) {
  *
  * @param {*} productStockElement
  *
- * Add a new product required stock row, input fields, and remove link
+ * Add a new product stock dependency row, input fields, and remove link
  *
  */
 
-function wcrs_productAddRequiredStock(productStockElement) {
+function wcsd_productAddRequiredStock(productStockElement) {
   existingStockRows = Array.from(
     productStockElement.getElementsByClassName(
-      "wcrs_product_stock_settings_row"
+      "wcsd_product_stock_settings_row"
     )
   );
   var y = 0;
@@ -481,18 +481,18 @@ function wcrs_productAddRequiredStock(productStockElement) {
     y++;
   }
   var values = { sku: "", qty: "" };
-  productStockRow = wcrs_createProductStockRow(y, productStockElement);
-  createEmptySkuInput = wcrs_createProductSkuTextInput(
+  productStockRow = wcsd_createProductStockRow(y, productStockElement);
+  createEmptySkuInput = wcsd_createProductSkuTextInput(
     y,
     values,
     productStockRow
   );
-  createEmptyQtyInput = wcrs_createProductQtyTextInput(
+  createEmptyQtyInput = wcsd_createProductQtyTextInput(
     y,
     values,
     productStockRow
   );
-  createRemoveStockLink = wcrs_productAddRemoveStockLink(y, productStockRow);
+  createRemoveStockLink = wcsd_productAddRemoveStockLink(y, productStockRow);
   return true;
 }
 
@@ -501,14 +501,14 @@ function wcrs_productAddRequiredStock(productStockElement) {
  * @param {*} x
  * @param {*} variationStockElement
  *
- * Add a new variation required stock row, input fields, and remove link
+ * Add a new variation stock dependency row, input fields, and remove link
  *
  */
 
-function wcrs_variationAddRequiredStock(x, variationStockElement) {
+function wcsd_variationAddRequiredStock(x, variationStockElement) {
   existingStockRows = Array.from(
     variationStockElement.getElementsByClassName(
-      "wcrs_variation_stock_settings_row"
+      "wcsd_variation_stock_settings_row"
     )
   );
   var y = 0;
@@ -520,20 +520,20 @@ function wcrs_variationAddRequiredStock(x, variationStockElement) {
     y++;
   }
   var values = { sku: "", qty: "" };
-  variationStockRow = wcrs_createVariationStockRow(x, y, variationStockElement);
-  createEmptySkuInput = wcrs_createVariationSkuTextInput(
+  variationStockRow = wcsd_createVariationStockRow(x, y, variationStockElement);
+  createEmptySkuInput = wcsd_createVariationSkuTextInput(
     x,
     y,
     values,
     variationStockRow
   );
-  createEmptyQtyInput = wcrs_createVariationQtyTextInput(
+  createEmptyQtyInput = wcsd_createVariationQtyTextInput(
     x,
     y,
     values,
     variationStockRow
   );
-  createRemoveStockLink = wcrs_variationAddRemoveStockLink(
+  createRemoveStockLink = wcsd_variationAddRemoveStockLink(
     x,
     y,
     variationStockRow
@@ -547,32 +547,32 @@ function wcrs_variationAddRequiredStock(x, variationStockElement) {
  * @param {object} productStockElement
  * @param {boolean} enabled
  *
- * Create a link that allows the user to add another required stock row
+ * Create a link that allows the user to add another stock dependency row
  * to the product
  *
  */
 
-function wcrs_productAddRequiredStockLink(
+function wcsd_productAddRequiredStockLink(
   productSettingsElement,
   productStockElement,
   enabled
 ) {
   var p = document.createElement("P");
-  p.className = "wcrs_product_add_stock_link form-row form-row-full";
-  p.id = "wcrs_product_add_stock_link";
+  p.className = "wcsd_product_add_stock_link form-row form-row-full";
+  p.id = "wcsd_product_add_stock_link";
   if (!enabled) {
     p.style.display = "none";
   } else {
     p.style.display = "block";
   }
   var a = document.createElement("a");
-  var link = document.createTextNode("Add required stock");
+  var link = document.createTextNode("Add stock dependency");
   a.appendChild(link);
-  a.title = "Add required stock";
+  a.title = "Add stock dependency";
   a.href = "";
   a.onclick = (function() {
     return function() {
-      runOnClick = wcrs_productAddRequiredStock(productStockElement);
+      runOnClick = wcsd_productAddRequiredStock(productStockElement);
       return false;
     };
   })();
@@ -588,33 +588,33 @@ function wcrs_productAddRequiredStockLink(
  * @param {object} variationStockElement
  * @param {boolean} enabled
  *
- * Create a link that allows the user to add another required stock row
+ * Create a link that allows the user to add another stock dependency row
  * to the variation
  *
  */
 
-function wcrs_variationAddRequiredStockLink(
+function wcsd_variationAddRequiredStockLink(
   x,
   variationSettingsElement,
   variationStockElement,
   enabled
 ) {
   var p = document.createElement("P");
-  p.className = "wcrs_variation_add_stock_link form-row form-row-full";
-  p.id = "wcrs_variation_add_stock_link-" + x;
+  p.className = "wcsd_variation_add_stock_link form-row form-row-full";
+  p.id = "wcsd_variation_add_stock_link-" + x;
   if (!enabled) {
     p.style.display = "none";
   } else {
     p.style.display = "block";
   }
   var a = document.createElement("a");
-  var link = document.createTextNode("Add required stock");
+  var link = document.createTextNode("Add stock dependency");
   a.appendChild(link);
-  a.title = "Add required stock";
+  a.title = "Add stock dependency";
   a.href = "";
   a.onclick = (function(x) {
     return function() {
-      runOnClick = wcrs_variationAddRequiredStock(x, variationStockElement);
+      runOnClick = wcsd_variationAddRequiredStock(x, variationStockElement);
       return false;
     };
   })(x);
@@ -625,32 +625,32 @@ function wcrs_variationAddRequiredStockLink(
 
 /**
  *
- * Create and populate the required stock fields for all the variations
+ * Create and populate the stock dependency fields for all the variations
  * of a product from the data in the hidden input field.
  *
  */
 
-function wcrs_createVariationSettings() {
+function wcsd_createVariationSettings() {
   var stockElements = Array.from(
-    document.getElementsByClassName("wcrs_variation_required_stock")
+    document.getElementsByClassName("wcsd_variation_stock_dependency")
   );
   if (stockElements.length > 0) {
     for (x in stockElements) {
       if (stockElements[x].value) {
         values = JSON.parse(stockElements[x].value);
       } else {
-        values = JSON.parse('{ "enabled": false, "required_stock": [ ] }');
+        values = JSON.parse('{ "enabled": false, "stock_dependency": [ ] }');
       }
-      variationSettingsElement = wcrs_createVariationSettingsElement(
+      variationSettingsElement = wcsd_createVariationSettingsElement(
         x,
         stockElements[x].parentElement
       );
-      enabledCheckboxCreated = wcrs_createVariationEnabledCheckboxInput(
+      enabledCheckboxCreated = wcsd_createVariationEnabledCheckboxInput(
         x,
         values,
         variationSettingsElement
       );
-      variationStockElement = wcrs_createVariationStockSettings(
+      variationStockElement = wcsd_createVariationStockSettings(
         x,
         variationSettingsElement,
         values.enabled
@@ -658,25 +658,25 @@ function wcrs_createVariationSettings() {
       var y = 0;
       if (stockElements[x].value) {
         values = JSON.parse(stockElements[x].value);
-        for (required_sku in values.required_stock) {
-          variationStockRow = wcrs_createVariationStockRow(
+        for (required_sku in values.stock_dependency) {
+          variationStockRow = wcsd_createVariationStockRow(
             x,
             y,
             variationStockElement
           );
-          skuTextInputCreated = wcrs_createVariationSkuTextInput(
+          skuTextInputCreated = wcsd_createVariationSkuTextInput(
             x,
             y,
-            values.required_stock[required_sku],
+            values.stock_dependency[required_sku],
             variationStockRow
           );
-          qtyTextInputCreated = wcrs_createVariationQtyTextInput(
+          qtyTextInputCreated = wcsd_createVariationQtyTextInput(
             x,
             y,
-            values.required_stock[required_sku],
+            values.stock_dependency[required_sku],
             variationStockRow
           );
-          removeLinkCreated = wcrs_variationAddRemoveStockLink(
+          removeLinkCreated = wcsd_variationAddRemoveStockLink(
             x,
             y,
             variationStockRow
@@ -684,12 +684,12 @@ function wcrs_createVariationSettings() {
           y++;
         }
       } else {
-        addEmptyVariationStockRow = wcrs_variationAddRequiredStock(
+        addEmptyVariationStockRow = wcsd_variationAddRequiredStock(
           x,
           variationStockElement
         );
       }
-      addRequiredVariationLinkCreated = wcrs_variationAddRequiredStockLink(
+      addRequiredVariationLinkCreated = wcsd_variationAddRequiredStockLink(
         x,
         variationSettingsElement,
         variationStockElement,
@@ -702,63 +702,63 @@ function wcrs_createVariationSettings() {
 
 /**
  *
- * Create and populate the required stock fields for the product
+ * Create and populate the stock dependency fields for the product
  * from the data in the hidden input field.
  *
  */
 
-function wcrs_createProductSettings() {
-  var stockElement = document.getElementById("wcrs_product_required_stock");
-  var wcrsProductSettings = document.getElementById(
-    "wcrs_product_required_stock"
+function wcsd_createProductSettings() {
+  var stockElement = document.getElementById("wcsd_product_stock_dependency");
+  var wcsdProductSettings = document.getElementById(
+    "wcsd_product_stock_dependency"
   ).value;
   console.log("stockElement");
   console.log(stockElement);
-  console.log("wcrsProductSettings");
-  console.log(wcrsProductSettings);
+  console.log("wcsdProductSettings");
+  console.log(wcsdProductSettings);
   if (stockElement) {
-    if (wcrsProductSettings) {
+    if (wcsdProductSettings) {
       values = JSON.parse(stockElement.value);
     } else {
-      values = JSON.parse('{ "enabled": false, "required_stock": [ ] }');
+      values = JSON.parse('{ "enabled": false, "stock_dependency": [ ] }');
     }
     console.log("values");
     console.log(values);
-    productSettingsElement = wcrs_createProductSettingsElement(
+    productSettingsElement = wcsd_createProductSettingsElement(
       stockElement.parentElement
     );
-    enabledCheckboxCreated = wcrs_createProductEnabledCheckboxInput(
+    enabledCheckboxCreated = wcsd_createProductEnabledCheckboxInput(
       values,
       productSettingsElement
     );
-    productStockElement = wcrs_createProductStockSettings(
+    productStockElement = wcsd_createProductStockSettings(
       productSettingsElement,
       values.enabled
     );
     var y = 0;
     if (stockElement.value) {
       values = JSON.parse(stockElement.value);
-      for (required_sku in values.required_stock) {
-        productStockRow = wcrs_createProductStockRow(y, productStockElement);
-        skuTextInputCreated = wcrs_createProductSkuTextInput(
+      for (required_sku in values.stock_dependency) {
+        productStockRow = wcsd_createProductStockRow(y, productStockElement);
+        skuTextInputCreated = wcsd_createProductSkuTextInput(
           y,
-          values.required_stock[required_sku],
+          values.stock_dependency[required_sku],
           productStockRow
         );
-        qtyTextInputCreated = wcrs_createProductQtyTextInput(
+        qtyTextInputCreated = wcsd_createProductQtyTextInput(
           y,
-          values.required_stock[required_sku],
+          values.stock_dependency[required_sku],
           productStockRow
         );
-        removeLinkCreated = wcrs_productAddRemoveStockLink(y, productStockRow);
+        removeLinkCreated = wcsd_productAddRemoveStockLink(y, productStockRow);
         y++;
       }
     } else {
-      addEmptyProductStockRow = wcrs_productAddRequiredStock(
+      addEmptyProductStockRow = wcsd_productAddRequiredStock(
         productStockElement
       );
     }
-    addRequiredProductLinkCreated = wcrs_productAddRequiredStockLink(
+    addRequiredProductLinkCreated = wcsd_productAddRequiredStockLink(
       productSettingsElement,
       productStockElement,
       values.enabled
@@ -769,47 +769,49 @@ function wcrs_createProductSettings() {
 
 /**
  *
- * This function gets called when a product required stock field value is changed.
+ * This function gets called when a product stock dependency field value is changed.
  * The hidden field is updated with each change.
  *
  */
 
-function wcrs_productOnChange() {
+function wcsd_productOnChange() {
   // Update only the product that has changed
-  if (document.getElementById(`wcrs_product_settings`)) {
-    if (document.getElementById(`wcrs_product_required_stock_enabled`)) {
+  if (document.getElementById(`wcsd_product_settings`)) {
+    if (document.getElementById(`wcsd_product_stock_dependency_enabled`)) {
       // get the current checkbox value
-      checkbox = document.getElementById(`wcrs_product_required_stock_enabled`);
+      checkbox = document.getElementById(
+        `wcsd_product_stock_dependency_enabled`
+      );
       var y = 0;
       // create an empty array to start creating the stock settings
       var requiredStock = [];
-      productSettingsElement = document.getElementById(`wcrs_product_settings`);
+      productSettingsElement = document.getElementById(`wcsd_product_settings`);
       productSettingRows = Array.from(
         productSettingsElement.getElementsByClassName(
-          "wcrs_product_stock_settings_row"
+          "wcsd_product_stock_settings_row"
         )
       );
       for (productSettingRow in productSettingRows) {
         y = productSettingRows[productSettingRow].id.split("-")[1];
         var requiredSku = document.getElementById(
-          `wcrs_product_required_stock-${y}-sku`
+          `wcsd_product_stock_dependency-${y}-sku`
         ).value;
         var requiredQty = document.getElementById(
-          `wcrs_product_required_stock-${y}-qty`
+          `wcsd_product_stock_dependency-${y}-qty`
         ).value;
-        // add the individual required stock sku and qty to the array
+        // add the individual stock dependency sku and qty to the array
         requiredStock.push({ sku: requiredSku, qty: requiredQty });
       }
       // create the settings object that will be written to the hidden input
       productSettings = {
         enabled: checkbox.checked,
-        required_stock: requiredStock
+        stock_dependency: requiredStock
       };
       // Useful for debugging to see what the script is writing to the hidden input
       // console.log(JSON.stringify(productSettings));
-      // update the hidden field with the required stock settings in JSON format
+      // update the hidden field with the stock dependency settings in JSON format
       document.getElementById(
-        `wcrs_product_required_stock`
+        `wcsd_product_stock_dependency`
       ).value = JSON.stringify(productSettings);
     } else {
       // The checkbox isn't in the DOM yet
@@ -826,52 +828,54 @@ function wcrs_productOnChange() {
  *
  * @param {object} changedObject
  *
- * This function gets called when a required stock field value is changed.
+ * This function gets called when a stock dependency field value is changed.
  * The hidden field is updated with each change.
  *
  */
 
-function wcrs_variationOnChange(changedObject) {
+function wcsd_variationOnChange(changedObject) {
   // Update only the variation that has changed
   var x = changedObject.parentElement.id.split("-")[1];
-  if (document.getElementById(`wcrs_variation_settings-${x}`)) {
-    if (document.getElementById(`wcrs_variation_required_stock-${x}-enabled`)) {
+  if (document.getElementById(`wcsd_variation_settings-${x}`)) {
+    if (
+      document.getElementById(`wcsd_variation_stock_dependency-${x}-enabled`)
+    ) {
       // get the current checkbox value
       checkbox = document.getElementById(
-        `wcrs_variation_required_stock-${x}-enabled`
+        `wcsd_variation_stock_dependency-${x}-enabled`
       );
       var y = 0;
       // create an empty array to start creating the stock settings
       var requiredStock = [];
       variationSettingsElement = document.getElementById(
-        `wcrs_variation_settings-${x}`
+        `wcsd_variation_settings-${x}`
       );
       variationSettingRows = Array.from(
         variationSettingsElement.getElementsByClassName(
-          "wcrs_variation_stock_settings_row"
+          "wcsd_variation_stock_settings_row"
         )
       );
       for (variationSettingRow in variationSettingRows) {
         y = variationSettingRows[variationSettingRow].id.split("-")[2];
         var requiredSku = document.getElementById(
-          `wcrs_variation_required_stock-${x}-${y}-sku`
+          `wcsd_variation_stock_dependency-${x}-${y}-sku`
         ).value;
         var requiredQty = document.getElementById(
-          `wcrs_variation_required_stock-${x}-${y}-qty`
+          `wcsd_variation_stock_dependency-${x}-${y}-qty`
         ).value;
-        // add the individual required stock sku and qty to the array
+        // add the individual stock dependency sku and qty to the array
         requiredStock.push({ sku: requiredSku, qty: requiredQty });
       }
       // create the settings object that will be written to the hidden input
       variationSettings = {
         enabled: checkbox.checked,
-        required_stock: requiredStock
+        stock_dependency: requiredStock
       };
       // Useful for debugging to see what the script is writing to the hidden input
       // console.log(JSON.stringify(variationSettings));
-      // update the hidden field with the required stock settings in JSON format
+      // update the hidden field with the stock dependency settings in JSON format
       document.getElementById(
-        `wcrs_variation_required_stock-${x}`
+        `wcsd_variation_stock_dependency-${x}`
       ).value = JSON.stringify(variationSettings);
     } else {
       // The checkbox isn't in the DOM yet
@@ -889,15 +893,15 @@ jQuery(document).ready(function($) {
   jQuery("#woocommerce-product-data").on(
     "woocommerce_variations_loaded",
     function(event) {
-      console.log("WooCommerce Required Stock starting");
+      console.log("WooCommerce Stock Dependency starting");
       var productTypeSelectElement = document.getElementById("product-type");
       var productTypeSelectedValue =
         productTypeSelectElement.options[productTypeSelectElement.selectedIndex]
           .value;
       if (productTypeSelectedValue == "simple") {
-        createdSettings = wcrs_createProductSettings();
+        createdSettings = wcsd_createProductSettings();
       } else if (productTypeSelectedValue == "variable") {
-        createdSettings = wcrs_createVariationSettings();
+        createdSettings = wcsd_createVariationSettings();
       }
     }
   );

@@ -1,2 +1,3 @@
-# wc-required-stock
-WooCommerce Required Stock Plugin
+# wc-stock-dependency
+
+WooCommerce Stock Dependency Plugin
