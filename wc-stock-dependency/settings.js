@@ -207,7 +207,7 @@ function wcsd_createProductSkuTextInput(y, values, productStockRow) {
   var label = document.createElement("label");
   label.htmlFor = input.id;
   label.className = "wcsd_product_stock_dependency_sku_label";
-  label.appendChild(document.createTextNode("Required SKU"));
+  label.appendChild(document.createTextNode("Dependency SKU"));
   p.appendChild(label);
   p.appendChild(input);
   productStockRow.appendChild(p);
@@ -243,7 +243,7 @@ function wcsd_createVariationSkuTextInput(x, y, values, variationStockRow) {
   var label = document.createElement("label");
   label.htmlFor = input.id;
   label.className = "wcsd_variation_stock_dependency_sku_label";
-  label.appendChild(document.createTextNode("Required SKU"));
+  label.appendChild(document.createTextNode("Dependency SKU"));
   p.appendChild(label);
   p.appendChild(input);
   variationStockRow.appendChild(p);
@@ -332,7 +332,7 @@ function wcsd_createVariationQtyTextInput(x, y, values, variationStockRow) {
  * Remove the product stock dependency row
  *
  */
-function wcsd_productRemoveRequiredStock(productStockRow) {
+function wcsd_productRemoveStockDependency(productStockRow) {
   console.log(productStockRow);
   productStockRow.parentNode.removeChild(productStockRow);
   return true;
@@ -345,7 +345,7 @@ function wcsd_productRemoveRequiredStock(productStockRow) {
  * Remove the variation stock dependency row
  *
  */
-function wcsd_variationRemoveRequiredStock(variationStockRow) {
+function wcsd_variationRemoveStockDependency(variationStockRow) {
   console.log(variationStockRow);
   jQuery(variationStockRow)
     .closest(".woocommerce_variation")
@@ -381,7 +381,7 @@ function wcsd_productAddRemoveStockLink(y, productStockRow) {
   a.href = "";
   a.onclick = (function() {
     return function() {
-      runOnClick = wcsd_productRemoveRequiredStock(productStockRow);
+      runOnClick = wcsd_productRemoveStockDependency(productStockRow);
       updateProductStock = wcsd_variationOnChange(this);
       return false;
     };
@@ -413,7 +413,7 @@ function wcsd_variationAddRemoveStockLink(x, y, variationStockRow) {
   a.href = "";
   a.onclick = (function(x) {
     return function() {
-      runOnClick = wcsd_variationRemoveRequiredStock(variationStockRow);
+      runOnClick = wcsd_variationRemoveStockDependency(variationStockRow);
       updateVariationStock = wcsd_variationOnChange(this);
       return false;
     };
@@ -466,7 +466,7 @@ function wcsd_createVariationStockRow(x, y, variationStockElement) {
  *
  */
 
-function wcsd_productAddRequiredStock(productStockElement) {
+function wcsd_productAddStockDependency(productStockElement) {
   existingStockRows = Array.from(
     productStockElement.getElementsByClassName(
       "wcsd_product_stock_settings_row"
@@ -505,7 +505,7 @@ function wcsd_productAddRequiredStock(productStockElement) {
  *
  */
 
-function wcsd_variationAddRequiredStock(x, variationStockElement) {
+function wcsd_variationAddStockDependency(x, variationStockElement) {
   existingStockRows = Array.from(
     variationStockElement.getElementsByClassName(
       "wcsd_variation_stock_settings_row"
@@ -552,7 +552,7 @@ function wcsd_variationAddRequiredStock(x, variationStockElement) {
  *
  */
 
-function wcsd_productAddRequiredStockLink(
+function wcsd_productAddStockDependencyLink(
   productSettingsElement,
   productStockElement,
   enabled
@@ -572,7 +572,7 @@ function wcsd_productAddRequiredStockLink(
   a.href = "";
   a.onclick = (function() {
     return function() {
-      runOnClick = wcsd_productAddRequiredStock(productStockElement);
+      runOnClick = wcsd_productAddStockDependency(productStockElement);
       return false;
     };
   })();
@@ -593,7 +593,7 @@ function wcsd_productAddRequiredStockLink(
  *
  */
 
-function wcsd_variationAddRequiredStockLink(
+function wcsd_variationAddStockDependencyLink(
   x,
   variationSettingsElement,
   variationStockElement,
@@ -614,7 +614,7 @@ function wcsd_variationAddRequiredStockLink(
   a.href = "";
   a.onclick = (function(x) {
     return function() {
-      runOnClick = wcsd_variationAddRequiredStock(x, variationStockElement);
+      runOnClick = wcsd_variationAddStockDependency(x, variationStockElement);
       return false;
     };
   })(x);
@@ -658,7 +658,7 @@ function wcsd_createVariationSettings() {
       var y = 0;
       if (stockElements[x].value) {
         values = JSON.parse(stockElements[x].value);
-        for (required_sku in values.stock_dependency) {
+        for (dependency_sku in values.stock_dependency) {
           variationStockRow = wcsd_createVariationStockRow(
             x,
             y,
@@ -667,13 +667,13 @@ function wcsd_createVariationSettings() {
           skuTextInputCreated = wcsd_createVariationSkuTextInput(
             x,
             y,
-            values.stock_dependency[required_sku],
+            values.stock_dependency[dependency_sku],
             variationStockRow
           );
           qtyTextInputCreated = wcsd_createVariationQtyTextInput(
             x,
             y,
-            values.stock_dependency[required_sku],
+            values.stock_dependency[dependency_sku],
             variationStockRow
           );
           removeLinkCreated = wcsd_variationAddRemoveStockLink(
@@ -684,12 +684,12 @@ function wcsd_createVariationSettings() {
           y++;
         }
       } else {
-        addEmptyVariationStockRow = wcsd_variationAddRequiredStock(
+        addEmptyVariationStockRow = wcsd_variationAddStockDependency(
           x,
           variationStockElement
         );
       }
-      addRequiredVariationLinkCreated = wcsd_variationAddRequiredStockLink(
+      addDependencyVariationLinkCreated = wcsd_variationAddStockDependencyLink(
         x,
         variationSettingsElement,
         variationStockElement,
@@ -738,27 +738,27 @@ function wcsd_createProductSettings() {
     var y = 0;
     if (stockElement.value) {
       values = JSON.parse(stockElement.value);
-      for (required_sku in values.stock_dependency) {
+      for (dependency_sku in values.stock_dependency) {
         productStockRow = wcsd_createProductStockRow(y, productStockElement);
         skuTextInputCreated = wcsd_createProductSkuTextInput(
           y,
-          values.stock_dependency[required_sku],
+          values.stock_dependency[dependency_sku],
           productStockRow
         );
         qtyTextInputCreated = wcsd_createProductQtyTextInput(
           y,
-          values.stock_dependency[required_sku],
+          values.stock_dependency[dependency_sku],
           productStockRow
         );
         removeLinkCreated = wcsd_productAddRemoveStockLink(y, productStockRow);
         y++;
       }
     } else {
-      addEmptyProductStockRow = wcsd_productAddRequiredStock(
+      addEmptyProductStockRow = wcsd_productAddStockDependency(
         productStockElement
       );
     }
-    addRequiredProductLinkCreated = wcsd_productAddRequiredStockLink(
+    addDependencyProductLinkCreated = wcsd_productAddStockDependencyLink(
       productSettingsElement,
       productStockElement,
       values.enabled
@@ -784,7 +784,7 @@ function wcsd_productOnChange() {
       );
       var y = 0;
       // create an empty array to start creating the stock settings
-      var requiredStock = [];
+      var dependencyStock = [];
       productSettingsElement = document.getElementById(`wcsd_product_settings`);
       productSettingRows = Array.from(
         productSettingsElement.getElementsByClassName(
@@ -793,19 +793,19 @@ function wcsd_productOnChange() {
       );
       for (productSettingRow in productSettingRows) {
         y = productSettingRows[productSettingRow].id.split("-")[1];
-        var requiredSku = document.getElementById(
+        var dependencySku = document.getElementById(
           `wcsd_product_stock_dependency-${y}-sku`
         ).value;
-        var requiredQty = document.getElementById(
+        var dependencyQty = document.getElementById(
           `wcsd_product_stock_dependency-${y}-qty`
         ).value;
         // add the individual stock dependency sku and qty to the array
-        requiredStock.push({ sku: requiredSku, qty: requiredQty });
+        dependencyStock.push({ sku: dependencySku, qty: dependencyQty });
       }
       // create the settings object that will be written to the hidden input
       productSettings = {
         enabled: checkbox.checked,
-        stock_dependency: requiredStock
+        stock_dependency: dependencyStock
       };
       // Useful for debugging to see what the script is writing to the hidden input
       // console.log(JSON.stringify(productSettings));
@@ -846,7 +846,7 @@ function wcsd_variationOnChange(changedObject) {
       );
       var y = 0;
       // create an empty array to start creating the stock settings
-      var requiredStock = [];
+      var dependencyStock = [];
       variationSettingsElement = document.getElementById(
         `wcsd_variation_settings-${x}`
       );
@@ -857,19 +857,19 @@ function wcsd_variationOnChange(changedObject) {
       );
       for (variationSettingRow in variationSettingRows) {
         y = variationSettingRows[variationSettingRow].id.split("-")[2];
-        var requiredSku = document.getElementById(
+        var dependencySku = document.getElementById(
           `wcsd_variation_stock_dependency-${x}-${y}-sku`
         ).value;
-        var requiredQty = document.getElementById(
+        var dependencyQty = document.getElementById(
           `wcsd_variation_stock_dependency-${x}-${y}-qty`
         ).value;
         // add the individual stock dependency sku and qty to the array
-        requiredStock.push({ sku: requiredSku, qty: requiredQty });
+        dependencyStock.push({ sku: dependencySku, qty: dependencyQty });
       }
       // create the settings object that will be written to the hidden input
       variationSettings = {
         enabled: checkbox.checked,
-        stock_dependency: requiredStock
+        stock_dependency: dependencyStock
       };
       // Useful for debugging to see what the script is writing to the hidden input
       // console.log(JSON.stringify(variationSettings));
