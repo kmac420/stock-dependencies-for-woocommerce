@@ -31,3 +31,26 @@ p.wcsd_variation_enabled {
   padding-left: 15px;
   padding-top: 26px;
 }
+
+.wcsd_product_stock_dependency_p {
+  width: 35%;
+  display: block;
+  float: left;
+  margin: 0px 0px 0px 10px !important;
+}
+
+.wcsd_product_stock_dependency_sku_label,
+.wcsd_product_stock_dependency_qty_label {
+  clear: both;
+  float: left !important;
+  margin: 0px !important;
+}
+
+input.wcsd_product_stock_dependency_sku,
+input.wcsd_product_stock_dependency_qty {
+  width: 100% !important;
+}
+
+.wcsd_product_remove_stock_link_p {
+  padding-top: 30px !important;
+}

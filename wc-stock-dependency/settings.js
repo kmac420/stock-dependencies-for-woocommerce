@@ -1,4 +1,97 @@
 /**
+ * Get the product's SKU
+ */
+
+function wcsd_getProductSku() {
+  return document.getElementById("_sku").value;
+}
+
+/**
+ *
+ * Get the variation's SKU
+ *
+ * @param {int} x
+ *
+ */
+
+function wcsd_getVariationSku(x) {
+  return document.getElementById(`variable_sku${x}`).value;
+}
+
+/**
+ *
+ * @param {string} errorCode
+ *
+ */
+
+function wcsd_createErrorMessage(errorCode) {
+  // create the div for the message
+  var d = document.createElement("div");
+  d.className = "wcsd_error_message notice is-dismissible notice-error";
+  d.id = `wcsd_error_message_${errorCode}`;
+  // create a paragrpah and append it to the div
+  var p = document.createElement("P");
+  p.className = "wcsd_error_message_p";
+  p.id = "wcsd_error_message_p";
+  if (errorCode == "sku-error") {
+    var textNode = document.createTextNode(
+      "Error: stock dependency SKU cannot be the same as the product SKU."
+    );
+  } else {
+    var textNode = document.createTextNode("Error: unknown error.");
+  }
+  p.appendChild(textNode);
+  d.appendChild(p);
+  // create the message dismissal button and append it to the div
+  var b = document.createElement("button");
+  b.className = "notice-dismiss";
+  b.onclick = (function(d) {
+    return function() {
+      d.parentNode.removeChild(d);
+      return false;
+    };
+  })(d);
+  d.appendChild(b);
+  // insert the div immediately before the post (product) editing form
+  const wrapElement = document.getElementsByClassName("wrap")[0];
+  const productForm = document.getElementById("post");
+  wrapElement.insertBefore(d, productForm);
+  jQuery("html, body").animate({ scrollTop: 80 }, 666);
+  return d;
+}
+
+/**
+ *
+ * @param {string} fieldType
+ * @param {int} y
+ *
+ */
+
+function wcsd_markProductStockDependencyField(fieldType, y) {
+  var errorField = document.getElementById(
+    `wcsd_product_stock_dependency-${y}-${fieldType}`
+  );
+  errorField.value = "";
+  errorField.setAttribute("style", "border: 1px solid red;");
+}
+
+/**
+ *
+ * @param {string} fieldType
+ * @param {int} x
+ * @param {int} y
+ *
+ */
+
+function wcsd_markVariationStockDependencyField(fieldType, x, y) {
+  var errorField = document.getElementById(
+    `wcsd_variation_stock_dependency-${x}-${y}-${fieldType}`
+  );
+  errorField.value = "";
+  errorField.setAttribute("style", "border: 1px solid red;");
+}
+
+/**
  *
  * @param {int} x
  * @param {Element} productPricingElement
@@ -97,6 +190,14 @@ function wcsd_createProductEnabledCheckboxInput(values, productStockElement) {
   checkbox.value = "enabled";
   checkbox.id = "wcsd_product_stock_dependency_enabled";
   checkbox.checked = values.enabled;
+  if (values.enabled) {
+    const manageStockElement = document.getElementById("_manage_stock");
+    manageStockElement.checked = "checked";
+    manageStockElement.readOnly = true;
+    const stockQtyElement = document.getElementById("_stock");
+    stockQtyElement.value = 0;
+    stockQtyElement.readOnly = true;
+  }
   // checkbox.onclick = wcsd_enableCheckboxClick;
   checkbox.onclick = (function(x) {
     return function() {
@@ -109,6 +210,12 @@ function wcsd_createProductEnabledCheckboxInput(values, productStockElement) {
       if (this.checked == true) {
         stockSettingsElement.style.display = "block";
         stockSettingsAddRowLink.style.display = "block";
+        const manageStockElement = document.getElementById("_manage_stock");
+        manageStockElement.checked = "checked";
+        manageStockElement.readOnly = true;
+        const stockQtyElement = document.getElementById("_stock");
+        stockQtyElement.value = 0;
+        stockQtyElement.readOnly = true;
       } else {
         stockSettingsElement.style.display = "none";
         stockSettingsAddRowLink.style.display = "none";
@@ -119,7 +226,7 @@ function wcsd_createProductEnabledCheckboxInput(values, productStockElement) {
   // checkbox.onchange = wcsd_productOnChange();
   var label = document.createElement("label");
   label.htmlFor = checkbox.id;
-  label.appendChild(document.createTextNode("Enable stock dependency"));
+  label.appendChild(document.createTextNode("Add stock dependency"));
   p.appendChild(label);
   p.appendChild(checkbox);
   productStockElement.appendChild(p);
@@ -150,6 +257,28 @@ function wcsd_createVariationEnabledCheckboxInput(
   checkbox.value = "enabled";
   checkbox.id = "wcsd_variation_stock_dependency-" + x + "-enabled";
   checkbox.checked = values.enabled;
+  if (values.enabled) {
+    // get the variation checkbox (by class name and then by name as
+    // there is no id associated with the checkbox input) and then set
+    // the values and make readonly
+    manageStockElements = document.getElementsByClassName(
+      "variable_manage_stock"
+    );
+    for (var i = 0; i < manageStockElements.length; i++) {
+      if (
+        manageStockElements[i].getAttribute("name") ===
+        `variable_manage_stock[${x}]`
+      ) {
+        manageStockElements[i].checked = "enabled";
+        manageStockElements[i].readOnly = true;
+      }
+    }
+    // get the variation stock quantity input by id and then set
+    // the values and make readonly
+    stockQtyElement = document.getElementById(`variable_stock${x}`);
+    stockQtyElement.value = 0;
+    stockQtyElement.readOnly = true;
+  }
   // checkbox.onclick = wcsd_enableCheckboxClick;
   checkbox.onclick = (function(x) {
     return function() {
@@ -162,6 +291,26 @@ function wcsd_createVariationEnabledCheckboxInput(
       if (this.checked == true) {
         stockSettingsElement.style.display = "block";
         stockSettingsAddRowLink.style.display = "block";
+        // get the variation checkbox (by class name and then by name as
+        // there is no id associated with the checkbox input) and then set
+        // the values and make readonly
+        manageStockElements = document.getElementsByClassName(
+          "variable_manage_stock"
+        );
+        for (var i = 0; i < manageStockElements.length; i++) {
+          if (
+            manageStockElements[i].getAttribute("name") ===
+            `variable_manage_stock[${x}]`
+          ) {
+            manageStockElements[i].checked = "enabled";
+            manageStockElements[i].readOnly = true;
+          }
+        }
+        // get the variation stock quantity input by id and then set
+        // the values and make readonly
+        stockQtyElement = document.getElementById(`variable_stock${x}`);
+        stockQtyElement.value = 0;
+        stockQtyElement.readOnly = true;
       } else {
         stockSettingsElement.style.display = "none";
         stockSettingsAddRowLink.style.display = "none";
@@ -172,7 +321,7 @@ function wcsd_createVariationEnabledCheckboxInput(
   // checkbox.onchange = wcsd_variationOnChange(this);
   var label = document.createElement("label");
   label.htmlFor = checkbox.id;
-  label.appendChild(document.createTextNode("Enable stock dependency"));
+  label.appendChild(document.createTextNode("Add stock dependency"));
   p.appendChild(label);
   p.appendChild(checkbox);
   variationStockElement.appendChild(p);
@@ -192,7 +341,7 @@ function wcsd_createVariationEnabledCheckboxInput(
 function wcsd_createProductSkuTextInput(y, values, productStockRow) {
   var p = document.createElement("P");
   p.className =
-    "form-field wcsd_product_stock_dependency_p wcsd_product_stock_dependency_sku form-row form-row-first";
+    "wcsd_product_stock_dependency_p wcsd_product_stock_dependency_sku";
   p.id = "wcsd_product_stock_dependency_p-" + y + "-sku";
   var input = document.createElement("input");
   input.setAttribute("type", "text");
@@ -263,7 +412,7 @@ function wcsd_createVariationSkuTextInput(x, y, values, variationStockRow) {
 function wcsd_createProductQtyTextInput(y, values, productStockRow) {
   var p = document.createElement("P");
   p.className =
-    "form-field wcsd_product_stock_dependency_p wcsd_product_stock_dependency_qty form-row form-row-last";
+    "wcsd_product_stock_dependency_p wcsd_product_stock_dependency_qty";
   p.id = "wcsd_product_stock_dependency_p-" + y + "-qty";
   var input = document.createElement("input");
   input.setAttribute("type", "number");
@@ -333,7 +482,6 @@ function wcsd_createVariationQtyTextInput(x, y, values, variationStockRow) {
  *
  */
 function wcsd_productRemoveStockDependency(productStockRow) {
-  console.log(productStockRow);
   productStockRow.parentNode.removeChild(productStockRow);
   return true;
 }
@@ -346,7 +494,6 @@ function wcsd_productRemoveStockDependency(productStockRow) {
  *
  */
 function wcsd_variationRemoveStockDependency(variationStockRow) {
-  console.log(variationStockRow);
   jQuery(variationStockRow)
     .closest(".woocommerce_variation")
     .addClass("variation-needs-update");
@@ -382,7 +529,7 @@ function wcsd_productAddRemoveStockLink(y, productStockRow) {
   a.onclick = (function() {
     return function() {
       runOnClick = wcsd_productRemoveStockDependency(productStockRow);
-      updateProductStock = wcsd_variationOnChange(this);
+      updateProductStock = wcsd_productOnChange();
       return false;
     };
   })();
@@ -712,18 +859,12 @@ function wcsd_createProductSettings() {
   var wcsdProductSettings = document.getElementById(
     "wcsd_product_stock_dependency"
   ).value;
-  console.log("stockElement");
-  console.log(stockElement);
-  console.log("wcsdProductSettings");
-  console.log(wcsdProductSettings);
   if (stockElement) {
     if (wcsdProductSettings) {
       values = JSON.parse(stockElement.value);
     } else {
       values = JSON.parse('{ "enabled": false, "stock_dependency": [ ] }');
     }
-    console.log("values");
-    console.log(values);
     productSettingsElement = wcsd_createProductSettingsElement(
       stockElement.parentElement
     );
@@ -769,8 +910,8 @@ function wcsd_createProductSettings() {
 
 /**
  *
- * This function gets called when a product stock dependency field value is changed.
- * The hidden field is updated with each change.
+ * This function gets called when a product stock dependency field value is changed
+ * for a product. The hidden field is updated with each change.
  *
  */
 
@@ -785,6 +926,7 @@ function wcsd_productOnChange() {
       var y = 0;
       // create an empty array to start creating the stock settings
       var dependencyStock = [];
+      var productSku = wcsd_getProductSku();
       productSettingsElement = document.getElementById(`wcsd_product_settings`);
       productSettingRows = Array.from(
         productSettingsElement.getElementsByClassName(
@@ -795,20 +937,27 @@ function wcsd_productOnChange() {
         y = productSettingRows[productSettingRow].id.split("-")[1];
         var dependencySku = document.getElementById(
           `wcsd_product_stock_dependency-${y}-sku`
-        ).value;
+        );
+        if (productSku == dependencySku.value) {
+          errorResult = wcsd_createErrorMessage("sku-error");
+          fieldResult = wcsd_markProductStockDependencyField("sku", y);
+        } else {
+          dependencySku.setAttribute("style", "border: 1px solid #7e8993");
+        }
         var dependencyQty = document.getElementById(
           `wcsd_product_stock_dependency-${y}-qty`
-        ).value;
+        );
         // add the individual stock dependency sku and qty to the array
-        dependencyStock.push({ sku: dependencySku, qty: dependencyQty });
+        dependencyStock.push({
+          sku: dependencySku.value,
+          qty: dependencyQty.value
+        });
       }
       // create the settings object that will be written to the hidden input
       productSettings = {
         enabled: checkbox.checked,
         stock_dependency: dependencyStock
       };
-      // Useful for debugging to see what the script is writing to the hidden input
-      // console.log(JSON.stringify(productSettings));
       // update the hidden field with the stock dependency settings in JSON format
       document.getElementById(
         `wcsd_product_stock_dependency`
@@ -828,8 +977,8 @@ function wcsd_productOnChange() {
  *
  * @param {object} changedObject
  *
- * This function gets called when a stock dependency field value is changed.
- * The hidden field is updated with each change.
+ * This function gets called when a stock dependency field value is changed
+ * for a product variation. The hidden field is updated with each change.
  *
  */
 
@@ -847,6 +996,7 @@ function wcsd_variationOnChange(changedObject) {
       var y = 0;
       // create an empty array to start creating the stock settings
       var dependencyStock = [];
+      var variationSku = wcsd_getVariationSku(x);
       variationSettingsElement = document.getElementById(
         `wcsd_variation_settings-${x}`
       );
@@ -859,20 +1009,24 @@ function wcsd_variationOnChange(changedObject) {
         y = variationSettingRows[variationSettingRow].id.split("-")[2];
         var dependencySku = document.getElementById(
           `wcsd_variation_stock_dependency-${x}-${y}-sku`
-        ).value;
+        );
+        if (variationSku == dependencySku.value) {
+          errorResult = wcsd_createErrorMessage("sku-error");
+          fieldResult = wcsd_markVariationStockDependencyField("sku", x, y);
+        } else {
+          dependencySku.setAttribute("style", "border: 1px solid #7e8993");
+        }
         var dependencyQty = document.getElementById(
           `wcsd_variation_stock_dependency-${x}-${y}-qty`
         ).value;
         // add the individual stock dependency sku and qty to the array
-        dependencyStock.push({ sku: dependencySku, qty: dependencyQty });
+        dependencyStock.push({ sku: dependencySku.value, qty: dependencyQty });
       }
       // create the settings object that will be written to the hidden input
       variationSettings = {
         enabled: checkbox.checked,
         stock_dependency: dependencyStock
       };
-      // Useful for debugging to see what the script is writing to the hidden input
-      // console.log(JSON.stringify(variationSettings));
       // update the hidden field with the stock dependency settings in JSON format
       document.getElementById(
         `wcsd_variation_stock_dependency-${x}`
@@ -898,6 +1052,7 @@ jQuery(document).ready(function($) {
       var productTypeSelectedValue =
         productTypeSelectElement.options[productTypeSelectElement.selectedIndex]
           .value;
+      // check the product type and create the appropriate input fields
       if (productTypeSelectedValue == "simple") {
         createdSettings = wcsd_createProductSettings();
       } else if (productTypeSelectedValue == "variable") {
