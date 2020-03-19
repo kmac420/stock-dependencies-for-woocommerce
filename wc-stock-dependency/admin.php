@@ -11,7 +11,6 @@
 
 function wcsd_get_product_by_sku($sku) {
   $product_id = wc_get_product_id_by_sku($sku);
-  // error_log('product_id from sku: ' . $product_id);
   if ($product_id) {
     return wc_get_product($product_id);
   } else {
@@ -111,13 +110,11 @@ add_action( 'woocommerce_save_product_variation', 'wcsd_save_product_variation',
  */
 
 function wcsd_product_get_stock_quantity($quantity, $product) {
-  error_log('wcsd_product_get_stock_quantity,' . microtime(true) . ',' . $product->get_id() . ',0,Getting stock quantity for product : ' . $product->get_id());
   if ($product->get_meta( '_stock_dependency')) {
     $stock_dependency_settings = json_decode($product->get_meta('_stock_dependency'));
     if ( $stock_dependency_settings->enabled) {
       foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
         if ($stock_dependency->sku) {
-          error_log('wcsd_product_get_stock_quantity,' . microtime(true) . ',' . $product->get_id() . ',1,Getting stock quantity for dependency SKU: ' . $stock_dependency->sku);
           if (wcsd_get_product_by_sku($stock_dependency->sku)) {
             $dependency_product = wcsd_get_product_by_sku($stock_dependency->sku);
             if ($dependency_product) {
@@ -125,7 +122,6 @@ function wcsd_product_get_stock_quantity($quantity, $product) {
               if ( !isset($temp_stock_quantity)) {
                 // $stock_dependency->qty should always be a positive, non-zero integer
                 $temp_stock_quantity = intdiv($dependency_product_available, $stock_dependency->qty);
-                error_log('wcsd_product_get_stock_quantity,' . microtime(true) . ',' . $product->get_id() . ',2,Stock for dependency SKU: ' . $stock_dependency->sku . ' Required per order item: ' . $stock_dependency->qty . ' Order qty: ' . $quantity);
               } else {
                 $temp_stock_quantity = min($temp_stock_quantity, intdiv($dependency_product_available, $stock_dependency->qty));
               }
@@ -139,7 +135,6 @@ function wcsd_product_get_stock_quantity($quantity, $product) {
       $quantity = $temp_stock_quantity;
     }
   }
-  error_log('wcsd_product_get_stock_quantity,' . microtime(true) . ',' . $product->get_id() . ',4,Stock quantity for product: ' . $product->get_id() . ' is: ' . $quantity);
   return $quantity;
 }
 
@@ -158,17 +153,14 @@ add_action( 'woocommerce_product_variation_get_stock_quantity', 'wcsd_product_ge
  */
 
 function wcsd_product_is_in_stock($is_in_stock, $product) {
-  error_log('wcsd_product_is_in_stock,' . microtime(true) . ',' . $product->get_id() . ',0,Getting is_in_stock for: ' . $product->get_id() . ' with initial is_in_stock: ' . $is_in_stock);
   if ($product->get_meta( '_stock_dependency')) {
     $stock_dependency_settings = json_decode($product->get_meta('_stock_dependency'));
     if ( $stock_dependency_settings->enabled) {
       foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
         if ($stock_dependency->sku) {
-          error_log('wcsd_product_is_in_stock,' . microtime(true) . ',' . $product->get_id() . ',1,Getting is_in_stock for dependency SKU: ' . $stock_dependency->sku);
           if (wcsd_get_product_by_sku($stock_dependency->sku)) {
             $dependency_product = wcsd_get_product_by_sku($stock_dependency->sku);
             $dependency_product_available = $dependency_product->get_stock_quantity();
-            error_log('wcsd_product_is_in_stock,' . microtime(true) . ',' . $product->get_id() . ',2,is_in_stock for dependency SKU: ' . $stock_dependency->sku . ' Required: ' . $stock_dependency->qty . ' Available: ' . $dependency_product_available);
             if (intdiv($dependency_product_available, $stock_dependency->qty) === 0) {
               $is_in_stock = false;
               break;
@@ -183,7 +175,6 @@ function wcsd_product_is_in_stock($is_in_stock, $product) {
       }
     }
   }
-  error_log('wcsd_product_is_in_stock,' . microtime(true) . ',' . $product->get_id() . ',4,is_in_stock for product: ' . $product->get_id() . ' is (string): ' . $is_in_stock);
   return $is_in_stock;
 }
 
@@ -204,23 +195,14 @@ add_filter( 'woocommerce_variation_is_in_stock', 'wcsd_product_is_in_stock', 10,
  */
 
 function wcsd_product_get_stock_status($status, $product) {
-  // error_log('$product');
-  // error_log(print_r($product, true));
-  error_log('wcsd_product_get_stock_status,' . microtime(true) . ',' . $product->get_id() . ',0,Getting stock status for: ' . $product->get_id());
   if ($product->get_meta( '_stock_dependency')) {
     $stock_dependency_settings = json_decode($product->get_meta('_stock_dependency'));
-    // error_log('$stock_dependency_settings');
-    // error_log(print_r($stock_dependency_settings, true));
     if ( $stock_dependency_settings->enabled) {
       foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
         if ($stock_dependency->sku) {
-          error_log('wcsd_product_get_stock_status,' . microtime(true) . ',' . $product->get_id() . ',1,Getting stock status for dependency SKU: ' . $stock_dependency->sku);
           if (wcsd_get_product_by_sku($stock_dependency->sku)) {
             $dependency_product = wcsd_get_product_by_sku($stock_dependency->sku);
             $dependency_product_available = $dependency_product->get_stock_quantity();
-            // error_log('$dependency_product_available');
-            // error_log(print_r($dependency_product_available, true));
-            error_log('wcsd_product_get_stock_status,' . microtime(true) . ',' . $product->get_id() . ',2,Stock for dependency SKU: ' . $stock_dependency->sku . ' Required: ' . $stock_dependency->qty);
             if (intdiv($dependency_product_available, $stock_dependency->qty) === 0) {
               $status = "outofstock";
               break;
@@ -236,7 +218,6 @@ function wcsd_product_get_stock_status($status, $product) {
       }
     }
   }
-  error_log('wcsd_product_get_stock_status,' . microtime(true) . ',' . $product->get_id() . ',3,Stock status for product: ' . $product->get_id() . ' is: ' . $status);
   return $status;
 }
 
@@ -263,8 +244,6 @@ function wcsd_reduce_order_stock($order) {
   $items = $order->get_items();
   // check each order item to see if there is stock dependency settings
   foreach ( $items as $item ) {
-    // error_log('$item');
-    // error_log(print_r($item, true));
     $order_product = wc_get_product( $item['product_id'] );
     if ( $order_product->is_type('variable')) {
       $order_product = wc_get_product( $item['variation_id'] );
