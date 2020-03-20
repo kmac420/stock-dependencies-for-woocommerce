@@ -11,7 +11,7 @@ License: MIT
 License URI: https://github.com/kmac420/wc-stock-dependencies/blob/master/LICENSE
 */
 
-namespace WCStockDependency {
+namespace WCStockDependencies {
 
     require_once dirname( __FILE__ ) .'/admin.php';
 
