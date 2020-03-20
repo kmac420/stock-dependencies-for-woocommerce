@@ -1,5 +1,5 @@
 <?php
-/* Custom Stock Dependency */
+/* Custom Stock Dependencies */
 
  /**
   * 
@@ -32,7 +32,7 @@ function wcsd_product_options_inventory_product_data( $product ) {
   if ( $post->post_type == "product" ) {
     $product = wc_get_product($post->ID);
     woocommerce_wp_hidden_input( array(
-	    'id'     => 'wcsd_product_stock_dependency',
+      'id'     => 'wcsd_product_stock_dependency',
       'class'  => "wcsd_product_stock_dependency",
       'name'   => "wcsd_product_stock_dependency",
       'value'  => $product->get_meta('_stock_dependency') ?? '',

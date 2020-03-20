@@ -1,3 +1,3 @@
-# wc-stock-dependency
+# wc-stock-dependencies
 
-WooCommerce Stock Dependency Plugin
+WooCommerce Stock Dependencies Plugin
