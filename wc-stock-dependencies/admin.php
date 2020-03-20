@@ -311,13 +311,15 @@ function wcsd_reduce_order_stock($order) {
 add_filter( 'woocommerce_reduce_order_stock', 'wcsd_reduce_order_stock', 10, 1);
 
 function wcsd_enqueu_scripts($hook) {
-  // Only add to the edit.php admin page.
-  // See WP docs.
-  // if ('edit.php' !== $hook) {
-  //   return;
-  // }
-  wp_enqueue_script('wcsd_admin_settings', plugins_url("/settings.js", __FILE__));
-  wp_enqueue_style('wcsd_admin_styles', plugins_url("/admin.css", __FILE__));
+  // Only add to the edit.php admin page and only if the post type is product
+  if ( $hook == 'post.php') {
+    global $post;
+    $post_type = get_post_type( $post );
+    if ( $post_type == 'product') {
+      wp_enqueue_script('wcsd_admin_settings', plugins_url("/settings.js", __FILE__));
+      wp_enqueue_style('wcsd_admin_styles', plugins_url("/admin.css", __FILE__));
+    }
+  }
 }
 
 add_action('admin_enqueue_scripts', 'wcsd_enqueu_scripts');
