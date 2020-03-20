@@ -1044,20 +1044,20 @@ function wcsd_variationOnChange(changedObject) {
 
 // jQuery(document).on("woocommerce_variations_loaded", function(event) {
 jQuery(document).ready(function($) {
-  jQuery("#woocommerce-product-data").on(
-    "woocommerce_variations_loaded",
-    function(event) {
-      console.log("WooCommerce Stock Dependency starting");
-      var productTypeSelectElement = document.getElementById("product-type");
-      var productTypeSelectedValue =
-        productTypeSelectElement.options[productTypeSelectElement.selectedIndex]
-          .value;
-      // check the product type and create the appropriate input fields
-      if (productTypeSelectedValue == "simple") {
-        createdSettings = wcsd_createProductSettings();
-      } else if (productTypeSelectedValue == "variable") {
+  console.log("WooCommerce Stock Dependency starting");
+  var productTypeSelectElement = document.getElementById("product-type");
+  var productTypeSelectedValue =
+    productTypeSelectElement.options[productTypeSelectElement.selectedIndex]
+      .value;
+  // check the product type and create the appropriate input fields
+  if (productTypeSelectedValue == "simple") {
+    createdSettings = wcsd_createProductSettings();
+  } else if (productTypeSelectedValue == "variable") {
+    jQuery("#woocommerce-product-data").on(
+      "woocommerce_variations_loaded",
+      function(event) {
         createdSettings = wcsd_createVariationSettings();
       }
-    }
-  );
+    );
+  }
 });
