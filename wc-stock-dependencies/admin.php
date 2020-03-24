@@ -1,4 +1,5 @@
 <?php
+
 /* Custom Stock Dependencies */
 
  /**
@@ -40,8 +41,6 @@ function wcsd_product_options_inventory_product_data( $product ) {
   }
 }
 
-add_action( 'woocommerce_product_options_inventory_product_data', 'wcsd_product_options_inventory_product_data' );
-
 /**
  * Add variable setting.
  *
@@ -58,11 +57,9 @@ function wcsd_add_variation_dependency_inventory( $loop, $variation_data, $varia
     'class'  => "wcsd_variation_stock_dependency",
     'name'   => "wcsd_variation_stock_dependency[{$loop}]",
     'value'  => $variation->get_meta('_stock_dependency') ?? '',
-	) );
+	  ) );
 
 }
-
-add_action( 'woocommerce_variation_options_pricing', 'wcsd_add_variation_dependency_inventory', 50, 3 );
 
 /**
  * Save the custom fields.
@@ -76,8 +73,6 @@ function wcsd_admin_process_product_object( $product ) {
     $product->update_meta_data( '_stock_dependency', stripslashes($_POST['wcsd_product_stock_dependency']));
   }
 }
-
-add_action( 'woocommerce_admin_process_product_object', 'wcsd_admin_process_product_object'  );
 
 /**
  * 
@@ -95,8 +90,6 @@ function wcsd_save_product_variation( $variation_id, $i ) {
     $variation->save();
   }
 }
-
-add_action( 'woocommerce_save_product_variation', 'wcsd_save_product_variation', 10, 2 );
 
 /**
  * 
@@ -138,9 +131,6 @@ function wcsd_product_get_stock_quantity($quantity, $product) {
   return $quantity;
 }
 
-add_action( 'woocommerce_product_get_stock_quantity', 'wcsd_product_get_stock_quantity', 10, 2 );
-add_action( 'woocommerce_product_variation_get_stock_quantity', 'wcsd_product_get_stock_quantity', 10, 2 );
-
 /**
  * 
  * @param bool $is_in_stock
@@ -177,9 +167,6 @@ function wcsd_product_is_in_stock($is_in_stock, $product) {
   }
   return $is_in_stock;
 }
-
-add_filter( 'woocommerce_product_is_in_stock', 'wcsd_product_is_in_stock', 10, 2 );
-add_filter( 'woocommerce_variation_is_in_stock', 'wcsd_product_is_in_stock', 10, 2 );
 
 /**
  * 
@@ -220,9 +207,6 @@ function wcsd_product_get_stock_status($status, $product) {
   }
   return $status;
 }
-
-add_filter( 'woocommerce_product_get_stock_status', 'wcsd_product_get_stock_status', 10, 2 );
-add_filter( 'woocommerce_product_variation_get_stock_status', 'wcsd_product_get_stock_status', 10, 2 );
 
 /**
  * hook action: wcsd_reduce_order_stock
@@ -308,8 +292,6 @@ function wcsd_reduce_order_stock($order) {
   }
 }
 
-add_filter( 'woocommerce_reduce_order_stock', 'wcsd_reduce_order_stock', 10, 1);
-
 function wcsd_enqueu_scripts($hook) {
   // Only add to the edit.php admin page and only if the post type is product
   if ( $hook == 'post.php') {
@@ -321,5 +303,3 @@ function wcsd_enqueu_scripts($hook) {
     }
   }
 }
-
-add_action('admin_enqueue_scripts', 'wcsd_enqueu_scripts');
