@@ -23,6 +23,9 @@ class WooCommerceStockDependencies {
    *
    * @param {string} errorCode
    *
+   * Create and display an error message in WordPress admin using only
+   * javascript (i.e. not a server-side call)
+   *
    */
 
   createErrorMessage(errorCode) {
@@ -35,11 +38,11 @@ class WooCommerceStockDependencies {
     p.className = "wcsd_error_message_p";
     p.id = "wcsd_error_message_p";
     if (errorCode == "sku-error") {
-      let textNode = document.createTextNode(
+      document.createTextNode(
         "Error: stock dependency SKU cannot be the same as the product SKU."
       );
     } else {
-      let textNode = document.createTextNode("Error: unknown error.");
+      document.createTextNode("Error: unknown error.");
     }
     p.appendChild(textNode);
     d.appendChild(p);
@@ -66,6 +69,8 @@ class WooCommerceStockDependencies {
    * @param {string} fieldType
    * @param {int} y
    *
+   * Highlight the stock dependency field in error
+   *
    */
 
   markProductStockDependencyField(fieldType, y) {
@@ -81,6 +86,8 @@ class WooCommerceStockDependencies {
    * @param {string} fieldType
    * @param {int} x
    * @param {int} y
+   *
+   * Highlight the stock dependency field in error
    *
    */
 
