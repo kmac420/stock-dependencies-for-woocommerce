@@ -395,7 +395,8 @@ class WooCommerceStockDependencies {
    * @param {array} values
    * @param {Element} productStockRow
    *
-   * Create the stock dependency quantity field
+   * Create the stock dependency quantity field and return the paragraph
+   * element containing it
    *
    */
 
@@ -433,7 +434,8 @@ class WooCommerceStockDependencies {
    * @param {array} values
    * @param {Element} variationStockRow
    *
-   * Create the stock dependency quantity field
+   * Create the stock dependency quantity field and return the paragraph
+   * element containing it
    *
    */
 
@@ -471,6 +473,7 @@ class WooCommerceStockDependencies {
    * Remove the product stock dependency row
    *
    */
+
   productRemoveStockDependency(productStockRow) {
     productStockRow.parentNode.removeChild(productStockRow);
     return true;
@@ -483,6 +486,7 @@ class WooCommerceStockDependencies {
    * Remove the variation stock dependency row
    *
    */
+
   variationRemoveStockDependency(variationStockRow) {
     jQuery(variationStockRow)
       .closest(".woocommerce_variation")
@@ -603,7 +607,7 @@ class WooCommerceStockDependencies {
    *
    * @param {*} productStockElement
    *
-   * Add a new product stock dependency row, input fields, and remove link
+   * Add a new product stock dependency row, input fields, and 'remove' link
    *
    */
 
@@ -634,7 +638,7 @@ class WooCommerceStockDependencies {
    * @param {*} x
    * @param {*} variationStockElement
    *
-   * Add a new variation stock dependency row, input fields, and remove link
+   * Add a new variation stock dependency row, input fields, and 'remove' link
    *
    */
 
@@ -774,7 +778,7 @@ class WooCommerceStockDependencies {
           x,
           stockElements[x].parentElement
         );
-        let enabledCheckboxCreated = this.createVariationEnabledCheckboxInput(
+        this.createVariationEnabledCheckboxInput(
           x,
           values,
           variationSettingsElement
