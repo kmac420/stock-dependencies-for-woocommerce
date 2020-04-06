@@ -46,11 +46,13 @@ namespace WooCommerceStockDependenciesAdmin {
     }
 
     /**
-     * Add variable setting.
      *
-     * @param $loop
+     * @param int $loop
      * @param $variation_data
-     * @param $variation
+     * @param WC_Product $variation
+     * 
+     * Add the stock dependencies field for the variations' settings page.
+     * 
      */
 
     function add_variation_dependency_inventory( $loop, $variation_data, $variation ) {
@@ -223,8 +225,6 @@ namespace WooCommerceStockDependenciesAdmin {
      * stock for that item. Note that if the item in the order being checked out 
      * has dependency products, then the WooCommerce function wc_reduce_order_stock
      * will set the inventory quantity of that product to zero (0).
-     * Once the 0-quantity reduction is complete, this function will be
-     * called and will reduce the stock for the dependency products.
      * 
      */
 
@@ -253,7 +253,7 @@ namespace WooCommerceStockDependenciesAdmin {
                   'decrease' );
                 if ( is_wp_error( $new_stock ) ) {
                   $order->add_order_note( sprintf(
-                    __('Unable to reduce stock for dependency SKU %s from %s by quantity %s', 'woocommerce' ),
+                    __('Unable to reduce stock for dependency SKU %s from %s to %s (by quantity %s)', 'woocommerce' ),
                     $dependency_product->get_sku(),
                     $old_stock_quantity,
                     $order_item_qty * $stock_dependency->qty )
@@ -278,7 +278,7 @@ namespace WooCommerceStockDependenciesAdmin {
               );
             } else {
               $order->add_order_note( sprintf(
-                __('Set order stock for SKU %s to 0', 'woocommerce' ),
+                __('Reset order stock for SKU %s to 0', 'woocommerce' ),
                 $order_product_sku )
               );
             }
@@ -310,8 +310,16 @@ namespace WooCommerceStockDependenciesAdmin {
       return $args;
     }
 
+    /**
+     * 
+     * @param string $hook
+     * 
+     * Enqueue the code and style files only to the edit.php admin page and only
+     * if the post type is product
+     * 
+     */
+
     public function enqueu_scripts($hook) {
-      // Only add to the edit.php admin page and only if the post type is product
       if ( $hook == 'post.php') {
         global $post;
         $post_type = get_post_type( $post );
