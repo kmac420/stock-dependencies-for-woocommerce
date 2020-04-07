@@ -112,5 +112,5 @@ As an example of using WC Stock Dependencies for a variable WooCommerce product,
 
 ## Todo
 
-- [ ] Restock inventory for refunds #1
-- [ ] Check dependency SKU validity during configuration #2
+- [ ] Restock inventory for refunds
+- [ ] Check dependency SKU validity during configuration
