@@ -1,10 +1,10 @@
 <?php
 
 /*
-Plugin Name: WooCommerce Stock Dependencies
-Plugin URI: https://kef.ca
-Description: 
-Version: 0.1
+Plugin Name: WC Stock Dependencies
+Plugin URI: https://github.com/kmac420/wc-stock-dependencies
+Description: Make the products and variations in your WooCommerce store dependent on the inventory of your other products or variations with WC Stock Dependencies.
+Version: 1.0
 Author: Kevin McCall
 Author URI: https://kef.ca
 License: MIT
@@ -15,7 +15,7 @@ namespace WCStockDependencies {
 
   require_once dirname( __FILE__ ) .'/admin.php';
 
-  use WooCommerceStockDependenciesAdmin as Admin;
+  use WCStockDependenciesAdmin as Admin;
 
   add_action( 'woocommerce_product_options_inventory_product_data', array( new Admin\Admin(), 'product_options_inventory_product_data' ), 10, 1 );
   add_action( 'woocommerce_variation_options_pricing', array( new Admin\Admin(), 'add_variation_dependency_inventory' ), 10, 3 );

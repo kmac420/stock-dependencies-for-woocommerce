@@ -1,3 +1,5 @@
 editor.formatOnSave = false
+
 [*.md]
 trim_trailing_whitespace = false
+

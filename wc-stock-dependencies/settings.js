@@ -1,4 +1,4 @@
-class WooCommerceStockDependencies {
+class WCStockDependencies {
   /**
    * Get the product's SKU
    */
@@ -49,8 +49,8 @@ class WooCommerceStockDependencies {
     // create the message dismissal button and append it to the div
     let b = document.createElement("button");
     b.className = "notice-dismiss";
-    b.onclick = (function(d) {
-      return function() {
+    b.onclick = (function (d) {
+      return function () {
         d.parentNode.removeChild(d);
         return false;
       };
@@ -202,8 +202,8 @@ class WooCommerceStockDependencies {
       stockQtyElement.value = 0;
       stockQtyElement.readOnly = true;
     }
-    checkbox.onclick = (function(x) {
-      return function() {
+    checkbox.onclick = (function (x) {
+      return function () {
         let stockSettingsElement = document.getElementById(
           `wcsd_product_stock_settings`
         );
@@ -278,8 +278,8 @@ class WooCommerceStockDependencies {
       stockQtyElement.readOnly = true;
     }
     // checkbox.onclick = wcsd_enableCheckboxClick;
-    checkbox.onclick = (function(x) {
-      return function() {
+    checkbox.onclick = (function (x) {
+      return function () {
         let stockSettingsElement = document.getElementById(
           `wcsd_variation_stock_settings-${x}`
         );
@@ -345,8 +345,8 @@ class WooCommerceStockDependencies {
     input.defaultValue = values.sku;
     input.className = "wcsd_product_stock_dependency_sku";
     input.id = "wcsd_product_stock_dependency-" + y + "-sku";
-    input.onchange = (function() {
-      return function() {
+    input.onchange = (function () {
+      return function () {
         wooCommerceStockDependencies.productOnChange();
       };
     })();
@@ -381,8 +381,8 @@ class WooCommerceStockDependencies {
     input.defaultValue = values.sku;
     input.className = "wcsd_variation_stock_dependency_sku";
     input.id = "wcsd_variation_stock_dependency-" + x + "-" + y + "-sku";
-    input.onchange = (function(x) {
-      return function() {
+    input.onchange = (function (x) {
+      return function () {
         wooCommerceStockDependencies.variationOnChange(this);
       };
     })(x);
@@ -419,8 +419,8 @@ class WooCommerceStockDependencies {
     input.defaultValue = Object.is(values.qty, undefined) ? 1 : values.qty;
     input.className = "wcsd_product_stock_dependency_qty";
     input.id = "wcsd_product_stock_dependency-" + y + "-qty";
-    input.onchange = (function() {
-      return function() {
+    input.onchange = (function () {
+      return function () {
         wooCommerceStockDependencies.productOnChange();
       };
     })();
@@ -458,8 +458,8 @@ class WooCommerceStockDependencies {
     input.defaultValue = Object.is(values.qty, undefined) ? 1 : values.qty;
     input.className = "wcsd_variation_stock_dependency_qty";
     input.id = "wcsd_variation_stock_dependency-" + x + "-" + y + "-qty";
-    input.onchange = (function(x) {
-      return function() {
+    input.onchange = (function (x) {
+      return function () {
         wooCommerceStockDependencies.variationOnChange(this);
       };
     })(x);
@@ -527,8 +527,8 @@ class WooCommerceStockDependencies {
     a.appendChild(link);
     a.title = "Remove stock dependency";
     a.href = "";
-    a.onclick = (function() {
-      return function() {
+    a.onclick = (function () {
+      return function () {
         wooCommerceStockDependencies.productRemoveStockDependency(
           productStockRow
         );
@@ -561,8 +561,8 @@ class WooCommerceStockDependencies {
     a.appendChild(link);
     a.title = "Remove stock dependency";
     a.href = "";
-    a.onclick = (function(x) {
-      return function() {
+    a.onclick = (function (x) {
+      return function () {
         wooCommerceStockDependencies.variationRemoveStockDependency(
           variationStockRow
         );
@@ -704,8 +704,8 @@ class WooCommerceStockDependencies {
     a.appendChild(link);
     a.title = "Add stock dependency";
     a.href = "";
-    a.onclick = (function() {
-      return function() {
+    a.onclick = (function () {
+      return function () {
         wooCommerceStockDependencies.productAddStockDependency(
           productStockElement
         );
@@ -748,8 +748,8 @@ class WooCommerceStockDependencies {
     a.appendChild(link);
     a.title = "Add stock dependency";
     a.href = "";
-    a.onclick = (function(x) {
-      return function() {
+    a.onclick = (function (x) {
+      return function () {
         wooCommerceStockDependencies.variationAddStockDependency(
           x,
           variationStockElement
@@ -935,13 +935,13 @@ class WooCommerceStockDependencies {
           // add the individual stock dependency sku and qty to the array
           dependencyStock.push({
             sku: dependencySku.value,
-            qty: dependencyQty.value
+            qty: dependencyQty.value,
           });
         }
         // create the settings object that will be written to the hidden input
         let productSettings = {
           enabled: checkbox.checked,
-          stock_dependency: dependencyStock
+          stock_dependency: dependencyStock,
         };
         // update the hidden field with the stock dependency settings in JSON format
         document.getElementById(
@@ -1007,13 +1007,13 @@ class WooCommerceStockDependencies {
           // add the individual stock dependency sku and qty to the array
           dependencyStock.push({
             sku: dependencySku.value,
-            qty: dependencyQty
+            qty: dependencyQty,
           });
         }
         // create the settings object that will be written to the hidden input
         let variationSettings = {
           enabled: checkbox.checked,
-          stock_dependency: dependencyStock
+          stock_dependency: dependencyStock,
         };
         // update the hidden field with the stock dependency settings in JSON format
         document.getElementById(
@@ -1031,10 +1031,10 @@ class WooCommerceStockDependencies {
   }
 }
 
-wooCommerceStockDependencies = new WooCommerceStockDependencies();
+wooCommerceStockDependencies = new WCStockDependencies();
 
-jQuery(document).ready(function($) {
-  console.log("WooCommerce Stock Dependency starting");
+jQuery(document).ready(function ($) {
+  console.log("WC Stock Dependency starting");
   let productTypeSelectElement = document.getElementById("product-type");
   let productTypeSelectedValue =
     productTypeSelectElement.options[productTypeSelectElement.selectedIndex]
@@ -1045,7 +1045,7 @@ jQuery(document).ready(function($) {
   } else if (productTypeSelectedValue == "variable") {
     jQuery("#woocommerce-product-data").on(
       "woocommerce_variations_loaded",
-      function(event) {
+      function (event) {
         createdSettings = wooCommerceStockDependencies.createVariationSettings();
       }
     );

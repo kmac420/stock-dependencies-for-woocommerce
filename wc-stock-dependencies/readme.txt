@@ -8,7 +8,7 @@ Requires PHP: 7.0
 License: MIT
 License URI: https://github.com/kmac420/wc-stock-dependencies/blob/master/LICENSE
 
-With WC Stock Dependencies, you can make the products and variations in your WooCommerce store dependent on the inventory of your other products or variations. Customers will be able to select and purchase the product without seeing the products on which it depends in their cart, during their checkout, or on their receipt. WC Stock Dependencies is ideal for selling products in multiple quantities -- for example, a single item, a package of six items, and and package of 12 items -- with the product inventory being maintained only for the single quantity item.
+Make the products and variations in your WooCommerce store dependent on the inventory of your other products or variations with WC Stock Dependencies. Customers will be able to select and purchase the product without seeing the products on which it depends in their cart, during their checkout, or on their receipt. WC Stock Dependencies is ideal for selling products in multiple quantities -- for example, a single item, a package of six items, and and package of 12 items -- with the product inventory being maintained only for the single quantity item.
 
 == Description ==
 
