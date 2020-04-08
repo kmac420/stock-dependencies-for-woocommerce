@@ -1,4 +1,4 @@
-class WCStockDependencies {
+class StockDependenciesForWooCommerce {
   /**
    * Get the product's SKU
    */
@@ -31,12 +31,12 @@ class WCStockDependencies {
   createErrorMessage(errorCode) {
     // create the div for the message
     let d = document.createElement("div");
-    d.className = "wcsd_error_message notice is-dismissible notice-error";
-    d.id = `wcsd_error_message_${errorCode}`;
+    d.className = "sdwc_error_message notice is-dismissible notice-error";
+    d.id = `sdwc_error_message_${errorCode}`;
     // create a paragrpah and append it to the div
     let p = document.createElement("P");
-    p.className = "wcsd_error_message_p";
-    p.id = "wcsd_error_message_p";
+    p.className = "sdwc_error_message_p";
+    p.id = "sdwc_error_message_p";
     if (errorCode == "sku-error") {
       document.createTextNode(
         "Error: stock dependency SKU cannot be the same as the product SKU."
@@ -75,7 +75,7 @@ class WCStockDependencies {
 
   markProductStockDependencyField(fieldType, y) {
     let errorField = document.getElementById(
-      `wcsd_product_stock_dependency-${y}-${fieldType}`
+      `sdwc_product_stock_dependency-${y}-${fieldType}`
     );
     errorField.value = "";
     errorField.setAttribute("style", "border: 1px solid red;");
@@ -93,7 +93,7 @@ class WCStockDependencies {
 
   markVariationStockDependencyField(fieldType, x, y) {
     let errorField = document.getElementById(
-      `wcsd_variation_stock_dependency-${x}-${y}-${fieldType}`
+      `sdwc_variation_stock_dependency-${x}-${y}-${fieldType}`
     );
     errorField.value = "";
     errorField.setAttribute("style", "border: 1px solid red;");
@@ -110,8 +110,8 @@ class WCStockDependencies {
 
   createProductSettingsElement(productPricingElement) {
     let d = document.createElement("div");
-    d.className = "wcsd_product_settings show_if_simple options_group";
-    d.id = "wcsd_product_settings";
+    d.className = "sdwc_product_settings show_if_simple options_group";
+    d.id = "sdwc_product_settings";
     productPricingElement.appendChild(d);
     return d;
   }
@@ -127,8 +127,8 @@ class WCStockDependencies {
 
   createVariationSettingsElement(x, variablePricingElement) {
     let d = document.createElement("div");
-    d.className = "wcsd_variation_settings";
-    d.id = "wcsd_variation_settings-" + x;
+    d.className = "sdwc_variation_settings";
+    d.id = "sdwc_variation_settings-" + x;
     variablePricingElement.appendChild(d);
     return d;
   }
@@ -145,8 +145,8 @@ class WCStockDependencies {
 
   createProductStockSettings(productSettingsElement, enabled) {
     let d = document.createElement("div");
-    d.className = "wcsd_product_stock_settings";
-    d.id = "wcsd_product_stock_settings";
+    d.className = "sdwc_product_stock_settings";
+    d.id = "sdwc_product_stock_settings";
     if (!enabled) {
       d.style.display = "none";
     }
@@ -166,8 +166,8 @@ class WCStockDependencies {
 
   createVariationStockSettings(x, variationSettingsElement, enabled) {
     let d = document.createElement("div");
-    d.className = "wcsd_variation_stock_settings";
-    d.id = "wcsd_variation_stock_settings-" + x;
+    d.className = "sdwc_variation_stock_settings";
+    d.id = "sdwc_variation_stock_settings-" + x;
     if (!enabled) {
       d.style.display = "none";
     }
@@ -186,13 +186,13 @@ class WCStockDependencies {
 
   createProductEnabledCheckboxInput(values, productStockElement) {
     let p = document.createElement("P");
-    p.className = "wcsd_product_enabled form-field show-if-simple";
-    p.id = "wcsd_product_enabled";
+    p.className = "sdwc_product_enabled form-field show-if-simple";
+    p.id = "sdwc_product_enabled";
     let checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.name = "enabled";
     checkbox.value = "enabled";
-    checkbox.id = "wcsd_product_stock_dependency_enabled";
+    checkbox.id = "sdwc_product_stock_dependency_enabled";
     checkbox.checked = values.enabled;
     if (values.enabled) {
       const manageStockElement = document.getElementById("_manage_stock");
@@ -205,10 +205,10 @@ class WCStockDependencies {
     checkbox.onclick = (function (x) {
       return function () {
         let stockSettingsElement = document.getElementById(
-          `wcsd_product_stock_settings`
+          `sdwc_product_stock_settings`
         );
         let stockSettingsAddRowLink = document.getElementById(
-          `wcsd_product_add_stock_link`
+          `sdwc_product_add_stock_link`
         );
         if (this.checked == true) {
           stockSettingsElement.style.display = "block";
@@ -247,13 +247,13 @@ class WCStockDependencies {
 
   createVariationEnabledCheckboxInput(x, values, variationStockElement) {
     let p = document.createElement("P");
-    p.className = "wcsd_variation_enabled form-row form-row-full options";
-    p.id = "wcsd_variation_enabled-" + x;
+    p.className = "sdwc_variation_enabled form-row form-row-full options";
+    p.id = "sdwc_variation_enabled-" + x;
     let checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.name = x + "-enabled";
     checkbox.value = "enabled";
-    checkbox.id = "wcsd_variation_stock_dependency-" + x + "-enabled";
+    checkbox.id = "sdwc_variation_stock_dependency-" + x + "-enabled";
     checkbox.checked = values.enabled;
     if (values.enabled) {
       // get the variation checkbox (by class name and then by name as
@@ -277,14 +277,14 @@ class WCStockDependencies {
       stockQtyElement.value = 0;
       stockQtyElement.readOnly = true;
     }
-    // checkbox.onclick = wcsd_enableCheckboxClick;
+    // checkbox.onclick = sdwc_enableCheckboxClick;
     checkbox.onclick = (function (x) {
       return function () {
         let stockSettingsElement = document.getElementById(
-          `wcsd_variation_stock_settings-${x}`
+          `sdwc_variation_stock_settings-${x}`
         );
         let stockSettingsAddRowLink = document.getElementById(
-          `wcsd_variation_add_stock_link-${x}`
+          `sdwc_variation_add_stock_link-${x}`
         );
         if (this.checked == true) {
           stockSettingsElement.style.display = "block";
@@ -338,13 +338,13 @@ class WCStockDependencies {
   createProductSkuTextInput(y, values, productStockRow) {
     let p = document.createElement("P");
     p.className =
-      "wcsd_product_stock_dependency_p wcsd_product_stock_dependency_sku";
-    p.id = "wcsd_product_stock_dependency_p-" + y + "-sku";
+      "sdwc_product_stock_dependency_p sdwc_product_stock_dependency_sku";
+    p.id = "sdwc_product_stock_dependency_p-" + y + "-sku";
     let input = document.createElement("input");
     input.setAttribute("type", "text");
     input.defaultValue = values.sku;
-    input.className = "wcsd_product_stock_dependency_sku";
-    input.id = "wcsd_product_stock_dependency-" + y + "-sku";
+    input.className = "sdwc_product_stock_dependency_sku";
+    input.id = "sdwc_product_stock_dependency-" + y + "-sku";
     input.onchange = (function () {
       return function () {
         wooCommerceStockDependencies.productOnChange();
@@ -352,7 +352,7 @@ class WCStockDependencies {
     })();
     let label = document.createElement("label");
     label.htmlFor = input.id;
-    label.className = "wcsd_product_stock_dependency_sku_label";
+    label.className = "sdwc_product_stock_dependency_sku_label";
     label.appendChild(document.createTextNode("Dependency SKU"));
     p.appendChild(label);
     p.appendChild(input);
@@ -374,13 +374,13 @@ class WCStockDependencies {
   createVariationSkuTextInput(x, y, values, variationStockRow) {
     let p = document.createElement("P");
     p.className =
-      "form-field wcsd_variable_stock_dependency_p wcsd_variable_stock_dependency_sku form-row form-row-first";
-    p.id = "wcsd_variation_stock_dependency_p-" + x + "-" + y + "-sku";
+      "form-field sdwc_variable_stock_dependency_p sdwc_variable_stock_dependency_sku form-row form-row-first";
+    p.id = "sdwc_variation_stock_dependency_p-" + x + "-" + y + "-sku";
     let input = document.createElement("input");
     input.setAttribute("type", "text");
     input.defaultValue = values.sku;
-    input.className = "wcsd_variation_stock_dependency_sku";
-    input.id = "wcsd_variation_stock_dependency-" + x + "-" + y + "-sku";
+    input.className = "sdwc_variation_stock_dependency_sku";
+    input.id = "sdwc_variation_stock_dependency-" + x + "-" + y + "-sku";
     input.onchange = (function (x) {
       return function () {
         wooCommerceStockDependencies.variationOnChange(this);
@@ -388,7 +388,7 @@ class WCStockDependencies {
     })(x);
     let label = document.createElement("label");
     label.htmlFor = input.id;
-    label.className = "wcsd_variation_stock_dependency_sku_label";
+    label.className = "sdwc_variation_stock_dependency_sku_label";
     label.appendChild(document.createTextNode("Dependency SKU"));
     p.appendChild(label);
     p.appendChild(input);
@@ -410,15 +410,15 @@ class WCStockDependencies {
   createProductQtyTextInput(y, values, productStockRow) {
     let p = document.createElement("P");
     p.className =
-      "wcsd_product_stock_dependency_p wcsd_product_stock_dependency_qty";
-    p.id = "wcsd_product_stock_dependency_p-" + y + "-qty";
+      "sdwc_product_stock_dependency_p sdwc_product_stock_dependency_qty";
+    p.id = "sdwc_product_stock_dependency_p-" + y + "-qty";
     let input = document.createElement("input");
     input.setAttribute("type", "number");
     input.setAttribute("min", "1");
     input.setAttribute("step", "1");
     input.defaultValue = Object.is(values.qty, undefined) ? 1 : values.qty;
-    input.className = "wcsd_product_stock_dependency_qty";
-    input.id = "wcsd_product_stock_dependency-" + y + "-qty";
+    input.className = "sdwc_product_stock_dependency_qty";
+    input.id = "sdwc_product_stock_dependency-" + y + "-qty";
     input.onchange = (function () {
       return function () {
         wooCommerceStockDependencies.productOnChange();
@@ -426,7 +426,7 @@ class WCStockDependencies {
     })();
     let label = document.createElement("label");
     label.htmlFor = input.id;
-    label.className = "wcsd_product_stock_dependency_qty_label";
+    label.className = "sdwc_product_stock_dependency_qty_label";
     label.appendChild(document.createTextNode("Qty"));
     p.appendChild(label);
     p.appendChild(input);
@@ -449,15 +449,15 @@ class WCStockDependencies {
   createVariationQtyTextInput(x, y, values, variationStockRow) {
     let p = document.createElement("P");
     p.className =
-      "form-field wcsd_variable_stock_dependency_p wcsd_variable_stock_dependency_qty form-row form-row-last";
-    p.id = "wcsd_variation_stock_dependency_p-" + x + "-" + y + "-qty";
+      "form-field sdwc_variable_stock_dependency_p sdwc_variable_stock_dependency_qty form-row form-row-last";
+    p.id = "sdwc_variation_stock_dependency_p-" + x + "-" + y + "-qty";
     let input = document.createElement("input");
     input.setAttribute("type", "number");
     input.setAttribute("min", "1");
     input.setAttribute("step", "1");
     input.defaultValue = Object.is(values.qty, undefined) ? 1 : values.qty;
-    input.className = "wcsd_variation_stock_dependency_qty";
-    input.id = "wcsd_variation_stock_dependency-" + x + "-" + y + "-qty";
+    input.className = "sdwc_variation_stock_dependency_qty";
+    input.id = "sdwc_variation_stock_dependency-" + x + "-" + y + "-qty";
     input.onchange = (function (x) {
       return function () {
         wooCommerceStockDependencies.variationOnChange(this);
@@ -465,7 +465,7 @@ class WCStockDependencies {
     })(x);
     let label = document.createElement("label");
     label.htmlFor = input.id;
-    label.className = "wcsd_variation_stock_dependency_qty_label";
+    label.className = "sdwc_variation_stock_dependency_qty_label";
     label.appendChild(document.createTextNode("Qty"));
     p.appendChild(label);
     p.appendChild(input);
@@ -520,8 +520,8 @@ class WCStockDependencies {
 
   productAddRemoveStockLink(y, productStockRow) {
     let p = document.createElement("P");
-    p.className = "wcsd_product_remove_stock_link_p form-row";
-    p.id = "wcsd_product_remove_stock_link-" + y;
+    p.className = "sdwc_product_remove_stock_link_p form-row";
+    p.id = "sdwc_product_remove_stock_link-" + y;
     let a = document.createElement("a");
     let link = document.createTextNode("Remove");
     a.appendChild(link);
@@ -554,8 +554,8 @@ class WCStockDependencies {
 
   variationAddRemoveStockLink(x, y, variationStockRow) {
     let p = document.createElement("P");
-    p.className = "wcsd_variation_remove_stock_link_p form-row";
-    p.id = "wcsd_variation_remove_stock_link-" + x + "-" + y;
+    p.className = "sdwc_variation_remove_stock_link_p form-row";
+    p.id = "sdwc_variation_remove_stock_link-" + x + "-" + y;
     let a = document.createElement("a");
     let link = document.createTextNode("Remove");
     a.appendChild(link);
@@ -586,8 +586,8 @@ class WCStockDependencies {
 
   createProductStockRow(y, productStockElement) {
     let d = document.createElement("div");
-    d.className = "wcsd_product_stock_settings_row";
-    d.id = `wcsd_product_stock_settings_row-${y}`;
+    d.className = "sdwc_product_stock_settings_row";
+    d.id = `sdwc_product_stock_settings_row-${y}`;
     productStockElement.appendChild(d);
     return d;
   }
@@ -604,8 +604,8 @@ class WCStockDependencies {
 
   createVariationStockRow(x, y, variationStockElement) {
     let d = document.createElement("div");
-    d.className = "wcsd_variation_stock_settings_row";
-    d.id = `wcsd_variation_stock_settings_row-${x}-${y}`;
+    d.className = "sdwc_variation_stock_settings_row";
+    d.id = `sdwc_variation_stock_settings_row-${x}-${y}`;
     variationStockElement.appendChild(d);
     return d;
   }
@@ -621,7 +621,7 @@ class WCStockDependencies {
   productAddStockDependency(productStockElement) {
     let existingStockRows = Array.from(
       productStockElement.getElementsByClassName(
-        "wcsd_product_stock_settings_row"
+        "sdwc_product_stock_settings_row"
       )
     );
     let y = 0;
@@ -652,7 +652,7 @@ class WCStockDependencies {
   variationAddStockDependency(x, variationStockElement) {
     let existingStockRows = Array.from(
       variationStockElement.getElementsByClassName(
-        "wcsd_variation_stock_settings_row"
+        "sdwc_variation_stock_settings_row"
       )
     );
     let y = 0;
@@ -692,8 +692,8 @@ class WCStockDependencies {
     enabled
   ) {
     let p = document.createElement("P");
-    p.className = "wcsd_product_add_stock_link form-row form-row-full";
-    p.id = "wcsd_product_add_stock_link";
+    p.className = "sdwc_product_add_stock_link form-row form-row-full";
+    p.id = "sdwc_product_add_stock_link";
     if (!enabled) {
       p.style.display = "none";
     } else {
@@ -736,8 +736,8 @@ class WCStockDependencies {
     enabled
   ) {
     let p = document.createElement("P");
-    p.className = "wcsd_variation_add_stock_link form-row form-row-full";
-    p.id = "wcsd_variation_add_stock_link-" + x;
+    p.className = "sdwc_variation_add_stock_link form-row form-row-full";
+    p.id = "sdwc_variation_add_stock_link-" + x;
     if (!enabled) {
       p.style.display = "none";
     } else {
@@ -771,7 +771,7 @@ class WCStockDependencies {
 
   createVariationSettings() {
     let stockElements = Array.from(
-      document.getElementsByClassName("wcsd_variation_stock_dependency")
+      document.getElementsByClassName("sdwc_variation_stock_dependency")
     );
     let values = "";
     if (stockElements.length > 0) {
@@ -839,13 +839,13 @@ class WCStockDependencies {
    */
 
   createProductSettings() {
-    let stockElement = document.getElementById("wcsd_product_stock_dependency");
-    let wcsdProductSettings = document.getElementById(
-      "wcsd_product_stock_dependency"
+    let stockElement = document.getElementById("sdwc_product_stock_dependency");
+    let sdwcProductSettings = document.getElementById(
+      "sdwc_product_stock_dependency"
     ).value;
     let values = "";
     if (stockElement) {
-      if (wcsdProductSettings) {
+      if (sdwcProductSettings) {
         values = JSON.parse(stockElement.value);
       } else {
         values = JSON.parse('{ "enabled": false, "stock_dependency": [ ] }');
@@ -900,28 +900,28 @@ class WCStockDependencies {
 
   productOnChange() {
     // Update only the product that has changed
-    if (document.getElementById(`wcsd_product_settings`)) {
-      if (document.getElementById(`wcsd_product_stock_dependency_enabled`)) {
+    if (document.getElementById(`sdwc_product_settings`)) {
+      if (document.getElementById(`sdwc_product_stock_dependency_enabled`)) {
         // get the current checkbox value
         let checkbox = document.getElementById(
-          `wcsd_product_stock_dependency_enabled`
+          `sdwc_product_stock_dependency_enabled`
         );
         let y = 0;
         // create an empty array to start creating the stock settings
         let dependencyStock = [];
         let productSku = this.getProductSku();
         let productSettingsElement = document.getElementById(
-          `wcsd_product_settings`
+          `sdwc_product_settings`
         );
         let productSettingRows = Array.from(
           productSettingsElement.getElementsByClassName(
-            "wcsd_product_stock_settings_row"
+            "sdwc_product_stock_settings_row"
           )
         );
         for (let i = 0; i < productSettingRows.length; i++) {
           let y = productSettingRows[i].id.split("-")[1];
           let dependencySku = document.getElementById(
-            `wcsd_product_stock_dependency-${y}-sku`
+            `sdwc_product_stock_dependency-${y}-sku`
           );
           if (productSku == dependencySku.value) {
             this.createErrorMessage("sku-error");
@@ -930,7 +930,7 @@ class WCStockDependencies {
             dependencySku.setAttribute("style", "border: 1px solid #7e8993");
           }
           let dependencyQty = document.getElementById(
-            `wcsd_product_stock_dependency-${y}-qty`
+            `sdwc_product_stock_dependency-${y}-qty`
           );
           // add the individual stock dependency sku and qty to the array
           dependencyStock.push({
@@ -945,7 +945,7 @@ class WCStockDependencies {
         };
         // update the hidden field with the stock dependency settings in JSON format
         document.getElementById(
-          `wcsd_product_stock_dependency`
+          `sdwc_product_stock_dependency`
         ).value = JSON.stringify(productSettings);
       } else {
         // The checkbox isn't in the DOM yet
@@ -970,30 +970,30 @@ class WCStockDependencies {
   variationOnChange(changedObject) {
     // Update only the variation that has changed
     let x = changedObject.parentElement.id.split("-")[1];
-    if (document.getElementById(`wcsd_variation_settings-${x}`)) {
+    if (document.getElementById(`sdwc_variation_settings-${x}`)) {
       if (
-        document.getElementById(`wcsd_variation_stock_dependency-${x}-enabled`)
+        document.getElementById(`sdwc_variation_stock_dependency-${x}-enabled`)
       ) {
         // get the current checkbox value
         let checkbox = document.getElementById(
-          `wcsd_variation_stock_dependency-${x}-enabled`
+          `sdwc_variation_stock_dependency-${x}-enabled`
         );
         let y = 0;
         // create an empty array to start creating the stock settings
         let dependencyStock = [];
         let variationSku = this.getVariationSku(x);
         let variationSettingsElement = document.getElementById(
-          `wcsd_variation_settings-${x}`
+          `sdwc_variation_settings-${x}`
         );
         let variationSettingRows = Array.from(
           variationSettingsElement.getElementsByClassName(
-            "wcsd_variation_stock_settings_row"
+            "sdwc_variation_stock_settings_row"
           )
         );
         for (let i = 0; i < variationSettingRows.length; i++) {
           y = variationSettingRows[i].id.split("-")[2];
           let dependencySku = document.getElementById(
-            `wcsd_variation_stock_dependency-${x}-${y}-sku`
+            `sdwc_variation_stock_dependency-${x}-${y}-sku`
           );
           if (variationSku == dependencySku.value) {
             this.createErrorMessage("sku-error");
@@ -1002,7 +1002,7 @@ class WCStockDependencies {
             dependencySku.setAttribute("style", "border: 1px solid #7e8993");
           }
           let dependencyQty = document.getElementById(
-            `wcsd_variation_stock_dependency-${x}-${y}-qty`
+            `sdwc_variation_stock_dependency-${x}-${y}-qty`
           ).value;
           // add the individual stock dependency sku and qty to the array
           dependencyStock.push({
@@ -1017,7 +1017,7 @@ class WCStockDependencies {
         };
         // update the hidden field with the stock dependency settings in JSON format
         document.getElementById(
-          `wcsd_variation_stock_dependency-${x}`
+          `sdwc_variation_stock_dependency-${x}`
         ).value = JSON.stringify(variationSettings);
       } else {
         // The checkbox isn't in the DOM yet
@@ -1031,7 +1031,7 @@ class WCStockDependencies {
   }
 }
 
-wooCommerceStockDependencies = new WCStockDependencies();
+wooCommerceStockDependencies = new StockDependenciesForWooCommerce();
 
 jQuery(document).ready(function ($) {
   console.log("WC Stock Dependency starting");

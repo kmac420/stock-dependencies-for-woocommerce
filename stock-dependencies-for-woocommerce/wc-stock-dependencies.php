@@ -1,17 +1,17 @@
 <?php
 
 /*
-Plugin Name: WC Stock Dependencies
-Plugin URI: https://github.com/kmac420/wc-stock-dependencies
-Description: Make the products and variations in your WooCommerce store dependent on the inventory of your other products or variations with WC Stock Dependencies.
+Plugin Name: Stock Dependencies for WooCommerce
+Plugin URI: https://github.com/kmac420/stock-dependencies-for-woocommerce
+Description: Make the products and variations in your WooCommerce store dependent on the inventory of your other products or variations with Stock Dependencies for WooCommerce.
 Version: 1.0
 Author: Kevin McCall
 Author URI: https://kef.ca
 License: MIT
-License URI: https://github.com/kmac420/wc-stock-dependencies/blob/master/LICENSE
+License URI: https://github.com/kmac420/stock-dependencies-for-woocommerce/blob/master/LICENSE
 */
 
-namespace WCStockDependencies {
+namespace StockDependenciesForWooCommerce {
 
   require_once dirname( __FILE__ ) .'/admin.php';
 

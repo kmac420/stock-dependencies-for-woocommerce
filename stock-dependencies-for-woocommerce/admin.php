@@ -37,9 +37,9 @@ namespace WCStockDependenciesAdmin {
       if ( $post->post_type == "product" ) {
         $product = wc_get_product($post->ID);
         woocommerce_wp_hidden_input( array(
-          'id'     => 'wcsd_product_stock_dependency',
-          'class'  => "wcsd_product_stock_dependency",
-          'name'   => "wcsd_product_stock_dependency",
+          'id'     => 'sdwc_product_stock_dependency',
+          'class'  => "sdwc_product_stock_dependency",
+          'name'   => "sdwc_product_stock_dependency",
           'value'  => $product->get_meta('_stock_dependency') ?? '',
         ) );
       }
@@ -59,9 +59,9 @@ namespace WCStockDependenciesAdmin {
 
       $variation = wc_get_product( $variation );
       woocommerce_wp_hidden_input( array(
-        'id'     => "wcsd_variation_stock_dependency-{$loop}",
-        'class'  => "wcsd_variation_stock_dependency",
-        'name'   => "wcsd_variation_stock_dependency[{$loop}]",
+        'id'     => "sdwc_variation_stock_dependency-{$loop}",
+        'class'  => "sdwc_variation_stock_dependency",
+        'name'   => "sdwc_variation_stock_dependency[{$loop}]",
         'value'  => $variation->get_meta('_stock_dependency') ?? '',
 	      ) );
 
@@ -75,8 +75,8 @@ namespace WCStockDependenciesAdmin {
 
     function admin_process_product_object( $product ) {
 
-      if ( ! empty( $_POST['wcsd_product_stock_dependency'] ) ) {
-        $product->update_meta_data( '_stock_dependency', stripslashes($_POST['wcsd_product_stock_dependency']));
+      if ( ! empty( $_POST['sdwc_product_stock_dependency'] ) ) {
+        $product->update_meta_data( '_stock_dependency', stripslashes($_POST['sdwc_product_stock_dependency']));
       }
     }
 
@@ -91,8 +91,8 @@ namespace WCStockDependenciesAdmin {
 
     function save_product_variation( $variation_id, $i ) {
       $variation = wc_get_product( $variation_id );
-      if ( ! empty( $_POST['wcsd_variation_stock_dependency-'.$i] ) ) {
-        $variation->update_meta_data( '_stock_dependency', stripslashes($_POST['wcsd_variation_stock_dependency-'.$i ]));
+      if ( ! empty( $_POST['sdwc_variation_stock_dependency-'.$i] ) ) {
+        $variation->update_meta_data( '_stock_dependency', stripslashes($_POST['sdwc_variation_stock_dependency-'.$i ]));
         $variation->save();
       }
     }
@@ -324,8 +324,8 @@ namespace WCStockDependenciesAdmin {
         global $post;
         $post_type = get_post_type( $post );
         if ( $post_type == 'product') {
-          wp_enqueue_script('wcsd_admin_settings', plugins_url("/settings.js", __FILE__));
-          wp_enqueue_style('wcsd_admin_styles', plugins_url("/admin.css", __FILE__));
+          wp_enqueue_script('sdwc_admin_settings', plugins_url("/settings.js", __FILE__));
+          wp_enqueue_style('sdwc_admin_styles', plugins_url("/admin.css", __FILE__));
         }
       }
     }
