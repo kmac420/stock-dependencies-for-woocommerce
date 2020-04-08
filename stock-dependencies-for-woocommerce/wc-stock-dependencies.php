@@ -15,7 +15,7 @@ namespace StockDependenciesForWooCommerce {
 
   require_once dirname( __FILE__ ) .'/admin.php';
 
-  use WCStockDependenciesAdmin as Admin;
+  use StockDependenciesForWooCommerceAdmin as Admin;
 
   add_action( 'woocommerce_product_options_inventory_product_data', array( new Admin\Admin(), 'product_options_inventory_product_data' ), 10, 1 );
   add_action( 'woocommerce_variation_options_pricing', array( new Admin\Admin(), 'add_variation_dependency_inventory' ), 10, 3 );

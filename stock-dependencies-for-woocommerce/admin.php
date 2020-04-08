@@ -1,6 +1,6 @@
 <?php
 
-namespace WCStockDependenciesAdmin {
+namespace StockDependenciesForWooCommerceAdmin {
 
   class Admin {
 
