@@ -312,6 +312,17 @@ namespace StockDependenciesForWooCommerceAdmin {
 
     /**
      * 
+     * @param array $links
+     * 
+     */
+
+    function actionLinks( $links ) {
+      $links[] = '<a href="https://github.com/kmac420/stock-dependencies-for-woocommerce#stock-dependencies-for-woocommerce-plugin" target="_blank">Documentation</a>';
+      return $links;
+    }
+
+    /**
+     * 
      * @param string $hook
      * 
      * Enqueue the code and style files only to the edit.php admin page and only

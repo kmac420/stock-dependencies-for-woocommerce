@@ -29,6 +29,7 @@ namespace StockDependenciesForWooCommerce {
   add_filter( 'woocommerce_product_variation_get_stock_status', array( new Admin\Admin(), 'product_get_stock_status' ), 10, 2 );
   add_filter( 'woocommerce_reduce_order_stock', array( new Admin\Admin(), 'reduce_order_stock' ), 10, 1 );
   add_filter( 'woocommerce_hidden_order_itemmeta', array(new Admin\Admin(), 'hidden_order_itemmeta' ), 50, 1);
+  add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), array(new Admin\Admin(), 'actionLinks' ), 10, 1 );
   add_action( 'admin_enqueue_scripts', array( new Admin\Admin(), 'enqueu_scripts' ) );
 
 }
