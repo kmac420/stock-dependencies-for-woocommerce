@@ -68,15 +68,36 @@ namespace StockDependenciesForWooCommerceAdmin {
     }
 
     /**
-     * Save the custom fields.
+     * 
+     * @param string $product_data
+     * 
+     * Validate that $product_data is proper JSON
+     * 
+     */
+
+    function validate_product_data ($product_data) {
+      json_decode($product_data);
+      return (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    /**
      *
      * @param WC_Product $product
+     * 
+     * Save the custom fields.
+     * 
      */
 
     function admin_process_product_object( $product ) {
 
       if ( ! empty( $_POST['sdwc_product_stock_dependency'] ) ) {
-        $product->update_meta_data( '_stock_dependency', stripslashes($_POST['sdwc_product_stock_dependency']));
+        $product_data = sanitize_text_field(stripslashes($_POST['sdwc_product_stock_dependency']));
+        if ( $this->validate_product_data($product_data)) {
+          $product->update_meta_data( '_stock_dependency', $product_data );
+          return true;
+        } else {
+          return false;
+        }
       }
     }
 
@@ -92,8 +113,14 @@ namespace StockDependenciesForWooCommerceAdmin {
     function save_product_variation( $variation_id, $i ) {
       $variation = wc_get_product( $variation_id );
       if ( ! empty( $_POST['sdwc_variation_stock_dependency-'.$i] ) ) {
-        $variation->update_meta_data( '_stock_dependency', stripslashes($_POST['sdwc_variation_stock_dependency-'.$i ]));
-        $variation->save();
+        $product_data = sanitize_text_field(stripslashes($_POST['sdwc_variation_stock_dependency-'.$i]));
+        if ( $this->validate_product_data($product_data)) {
+          $variation->update_meta_data( '_stock_dependency', $product_data);
+          $variation->save();
+          return true;
+        } else {
+          return false;
+        }
       }
     }
 
