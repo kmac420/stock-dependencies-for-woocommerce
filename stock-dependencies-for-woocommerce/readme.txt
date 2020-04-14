@@ -17,6 +17,7 @@ With Stock Dependencies for WooCommerce, you can make the products and variation
 Stock Dependencies for WooCommerce works for Simple and Variable product types in WooCommerce and you can make a product or variation dependent on a combination of other products and variations. Stock Dependencies for WooCommerce lets you create dependencies on quantities of one or more of the other products.
 
 Stock Dependencies for WooCommerce is ideal for:
+
 *   Selling products in multiple quantities. For an product you already have in your inventory, you can use Stock Dependencies for WooCommerce to sell, for example, a package of six items and and package of 12 items. With Stock Dependencies for WooCommerce you do not need to maintain inventory levels for each quantity of the product as the product inventory is managed for only the single quantity item.
 *   Selling bundled products. You can create a bundle of multiple items and sell them as a single item. With Stock Dependencies for WooCommerce your customers will only see the bundle product in their cart, during the checkout process, and on their order receipt.
 
