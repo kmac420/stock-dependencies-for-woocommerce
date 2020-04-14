@@ -17,8 +17,8 @@ With Stock Dependencies for WooCommerce, you can make the products and variation
 Stock Dependencies for WooCommerce works for Simple and Variable product types in WooCommerce and you can make a product or variation dependent on a combination of other products and variations. Stock Dependencies for WooCommerce lets you create dependencies on quantities of one or more of the other products.
 
 Stock Dependencies for WooCommerce is ideal for:
-* Selling products in multiple quantities. For an product you already have in your inventory, you can use Stock Dependencies for WooCommerce to sell, for example, a package of six items and and package of 12 items. With Stock Dependencies for WooCommerce you do not need to maintain inventory levels for each quantity of the product as the product inventory is managed for only the single quantity item.
-* Selling bundled products. You can create a bundle of multiple items and sell them as a single item. With Stock Dependencies for WooCommerce your customers will only see the bundle product in their cart, during the checkout process, and on their order receipt.
+*  Selling products in multiple quantities. For an product you already have in your inventory, you can use Stock Dependencies for WooCommerce to sell, for example, a package of six items and and package of 12 items. With Stock Dependencies for WooCommerce you do not need to maintain inventory levels for each quantity of the product as the product inventory is managed for only the single quantity item.
+*  Selling bundled products. You can create a bundle of multiple items and sell them as a single item. With Stock Dependencies for WooCommerce your customers will only see the bundle product in their cart, during the checkout process, and on their order receipt.
 
 When a product with stock dependencies is displayed in your store, Stock Dependencies for WooCommerce will check the inventory of the products on which it depends and will only show the product as being available if all the dependent stock items are available. When a product with stock dependencies is added to a shopping cart and eventually purchased, the customer will only see the single product in their cart and order, and will not see the products on which it is dependent. When the product is purchased, Stock Dependencies for WooCommerce will reduce the inventory of the items on which it is dependent by the appropriate amount.
 
@@ -38,14 +38,12 @@ Customers will only see the product they selected, and not the products upon whi
 
 Install the WooCommerce Stock Dependencies plugin
 
-1.  Download and install the plugin from the [release page](https://github.com/kmac420/stock-dependencies-for-woocommerce/releases) or install directly from the WordPress plugin directory.
+1.  Download and install the plugin from the [release page](https://github.com/kmac420/stock-dependencies-for-woocommerce/releases) or install directly from the [WordPress plugin directory](https://wordpress.org/plugins/wc-stock-dependencies).
 1.  Activate the plugin.
 1.  In your WordPress admin, navigate to the Products listing page and select a product to configure.
 1.  Enable stock dependencies.
-1.  For simple products, edit the product and navigate to the Inventory tab and check the "Add stock dependency" checkbox.
-1.1.  Add the SKU and the quantity for each product or variation on which this product is dependent.
-1.  For variable products, edit the product and navigate to the Variations tab and check the "Add stock dependency" checkbox for each variation.
-1.1.  Add the SKU and the quantity for each product or variation on which this product variation is dependent.
+1.  For simple products, edit the product and navigate to the Inventory tab and check the "Add stock dependency" checkbox. Add the SKU and the quantity for each product or variation on which this product is dependent.
+1.  For variable products, edit the product and navigate to the Variations tab and check the "Add stock dependency" checkbox for each variation. Add the SKU and the quantity for each product or variation on which this product variation is dependent.
 
 == Frequently Asked Questions ==
 
@@ -83,7 +81,7 @@ This is the initial release of the Stock Dependencies for WooCommerce plugin.
 
 == Privacy ==
 
-The Stock Dependencies for WooCommerce plugin does not affect the way personal information is collected or stored within your WooCommerce store.
+The Stock Dependencies for WooCommerce plugin does not affect the way personal information is collected or stored within your WooCommerce store or your WordPress installation.
 
 == Open Source ==
 
