@@ -1,5 +1,5 @@
 === Stock Dependencies for WooCommerce ===
-Contributors: kevinmccall
+Contributors: KevinMcCall
 Tags: woocommerce,stock,dependencies,product,simple,variation,inventory,dependency
 Requires at least: 5.0
 Tested up to: 5.4
