@@ -24,7 +24,7 @@ namespace StockDependenciesForWooCommerce {
   add_action( 'woocommerce_product_get_stock_quantity', array( new Admin\Admin(), 'product_get_stock_quantity' ), 10, 2 );
   add_action( 'woocommerce_product_variation_get_stock_quantity', array( new Admin\Admin(), 'product_get_stock_quantity' ), 10, 2 );
   add_filter( 'woocommerce_product_is_in_stock', array( new Admin\Admin(), 'product_is_in_stock' ), 10, 2 );
-  add_filter( 'woocommerce_variation_is_in_stock', array( new Admin\Admin(), 'product_is_in_stock' ), 10, 2 );
+  add_filter( 'woocommerce_variation_is_in_stock', array( new Admin\Admin(), 'variation_is_in_stock' ), 10, 2 );
   add_filter( 'woocommerce_product_get_stock_status', array( new Admin\Admin(), 'product_get_stock_status' ), 10, 2 );
   add_filter( 'woocommerce_product_variation_get_stock_status', array( new Admin\Admin(), 'product_get_stock_status' ), 10, 2 );
   add_filter( 'woocommerce_reduce_order_stock', array( new Admin\Admin(), 'reduce_order_stock' ), 10, 1 );

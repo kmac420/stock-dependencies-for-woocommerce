@@ -169,15 +169,122 @@ namespace StockDependenciesForWooCommerceAdmin {
      * @param bool $is_in_stock
      * @param WC_Product $product
      * 
-     * Get the in-stock status of the product/variation by checking the stock levels of the 
-     * dependency products/variations. If there are no stock dependency settings then simply return
-     * the product's/variation's actual in-stock status
+     * Get the in-stock status of the product by checking the stock levels of the 
+     * dependency products. If there are no stock dependency settings then simply return
+     * the product's actual in-stock status. Handles simple and variable products.
      * 
      */
 
     function product_is_in_stock($is_in_stock, $product) {
-      if ($product->get_meta( '_stock_dependency')) {
-        $stock_dependency_settings = json_decode($product->get_meta('_stock_dependency'));
+      error_log('checking product_is_in_stock');
+      error_log('-- id: ' . $product->get_id() . 
+        ', type: ' . $product->get_type() .
+        ', managing_stock: ' . $product->managing_stock() .
+        ', is_in_stock: ' . $is_in_stock);
+      if ( $product->is_type('variable') && $product->has_child() && !$product->managing_stock()) {
+        /** if the product type is variable, and the product has children (i.e. variations)
+         *  and stock is not being managed at the product level (i.e. it is possibly being
+         *  managed at the variation level) then check to see if there are stock dependencies
+         *  for each of the variations that affect the stock status
+         */
+        error_log('-- product is variable and has children');
+        foreach ($product->get_children() as $key => $variation_id) {
+          $variation = wc_get_product($variation_id);
+          if ( $variation->is_type('variation') && $variation->managing_stock()) {
+            // $variation_check = $this->variation_is_in_stock($is_in_stock, $variation);
+            $variation_check = $variation->is_in_stock();
+            error_log('-- variation: ' . $variation_id . ', variation check result: ' . $variation_check);
+            if ($variation_check) {
+              /** if there is at least one variation that has stock then we will consider
+               *  the variable product to be instock
+               */
+              $is_in_stock = true;
+              break;
+            }
+          }
+        }
+        /** updated the stock_status value for the variable product as sometimes the stock_status
+         *  in the DB gets out of sync e.g. when any of the products or variations on which this 
+         *  product depends has had its stock depleted
+        */
+        if ($is_in_stock) {
+          $product->set_stock_status('instock');
+        } else {
+          $product->set_stock_status('outofstock');
+        }
+      } else if (( $product->is_type('simple') || $product->is_type('variation')) && $product->managing_stock() ) {
+        /** if the product is either a simple product or a product variation then and
+         *  inventory is being managed then check if there are stock dependencies that
+         *  affect the stock status
+        */
+        $stock_dependencies_enabled = false;
+        /** get the stock dependency settings if they exist */
+        if ($product->managing_stock() && $product->get_meta( '_stock_dependency')) {
+          $stock_dependency_settings = json_decode($product->get_meta('_stock_dependency'));
+          if (property_exists($stock_dependency_settings, 'enabled')) {
+            $stock_dependencies_enabled = true;
+          }
+        }
+        error_log('-- product ' . $product->get_id() . ' is ' . $product->get_type());
+        // error_log(print_r($stock_dependency_settings, true));
+        if ( $stock_dependencies_enabled) {
+          // product has stock dependencies so check each dependency to see if in stock
+          foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
+            if ($stock_dependency->sku) {
+              if ($this->get_product_by_sku($stock_dependency->sku)) {
+                $dependency_product = $this->get_product_by_sku($stock_dependency->sku);
+                $dependency_product_available = $dependency_product->get_stock_quantity();
+                if (intdiv($dependency_product_available, $stock_dependency->qty) === 0) {
+                  $is_in_stock = false;
+                  /** if there is at least one dependency that is not in stock then we will consider
+                   *  the product or variation to be outofstock
+                   */
+                  break;
+                } elseif (intdiv($dependency_product_available, $stock_dependency->qty) > 0) {
+                  $is_in_stock = true;
+                }
+              } else {
+                $is_in_stock =false;
+                /** if we cannot get the product or variation dependency by SKU then we will consider
+                 *  the product or variation to be outofstock
+                 */
+                break;
+              }
+            }
+          }
+        }
+        /** updated the stock_status value for the variable product as sometimes the stock_status
+         *  in the DB gets out of sync e.g. when any of the products or variations on which this 
+         *  product depends has had its stock depleted
+        */
+        if ($is_in_stock) {
+          $product->set_stock_status('instock');
+        } else {
+          $product->set_stock_status('outofstock');
+        }
+      }
+      error_log('-- product ' . $product->get_id() . ' is_in_stock: ' . $is_in_stock);
+      error_log('');
+      return $is_in_stock;
+    }
+
+    /**
+     * 
+     * @param bool $is_in_stock
+     * @param WC_Product $product
+     * 
+     * Get the in-stock status of the variation by checking the stock levels of the 
+     * dependency variations. If there are no stock dependency settings then simply return
+     * the variation's actual in-stock status
+     * 
+     */
+
+    function variation_is_in_stock($is_in_stock, $variation) {
+      error_log('  -- variation_is_in_stock - id: ' . $variation->get_id() . 
+        ', type: ' . $variation->get_type() .
+        ', managing_stock: ' . $variation->managing_stock());
+      if ($variation->get_meta( '_stock_dependency')) {
+        $stock_dependency_settings = json_decode($variation->get_meta('_stock_dependency'));
         if ( $stock_dependency_settings->enabled) {
           foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
             if ($stock_dependency->sku) {
@@ -198,6 +305,7 @@ namespace StockDependenciesForWooCommerceAdmin {
           }
         }
       }
+      error_log('  -- returning $is_in_stock: ' . $is_in_stock);
       return $is_in_stock;
     }
 
