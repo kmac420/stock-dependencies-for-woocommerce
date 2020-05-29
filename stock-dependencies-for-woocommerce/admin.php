@@ -176,24 +176,17 @@ namespace StockDependenciesForWooCommerceAdmin {
      */
 
     function product_is_in_stock($is_in_stock, $product) {
-      error_log('checking product_is_in_stock');
-      error_log('-- id: ' . $product->get_id() . 
-        ', type: ' . $product->get_type() .
-        ', managing_stock: ' . $product->managing_stock() .
-        ', is_in_stock: ' . $is_in_stock);
-      if ( $product->is_type('variable') && $product->has_child() && !$product->managing_stock()) {
+     if ( $product->is_type('variable') && $product->has_child() && !$product->managing_stock()) {
         /** if the product type is variable, and the product has children (i.e. variations)
          *  and stock is not being managed at the product level (i.e. it is possibly being
          *  managed at the variation level) then check to see if there are stock dependencies
          *  for each of the variations that affect the stock status
          */
-        error_log('-- product is variable and has children');
         foreach ($product->get_children() as $key => $variation_id) {
           $variation = wc_get_product($variation_id);
           if ( $variation->is_type('variation') && $variation->managing_stock()) {
             // $variation_check = $this->variation_is_in_stock($is_in_stock, $variation);
             $variation_check = $variation->is_in_stock();
-            error_log('-- variation: ' . $variation_id . ', variation check result: ' . $variation_check);
             if ($variation_check) {
               /** if there is at least one variation that has stock then we will consider
                *  the variable product to be instock
@@ -225,8 +218,6 @@ namespace StockDependenciesForWooCommerceAdmin {
             $stock_dependencies_enabled = true;
           }
         }
-        error_log('-- product ' . $product->get_id() . ' is ' . $product->get_type());
-        // error_log(print_r($stock_dependency_settings, true));
         if ( $stock_dependencies_enabled) {
           // product has stock dependencies so check each dependency to see if in stock
           foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
@@ -263,8 +254,6 @@ namespace StockDependenciesForWooCommerceAdmin {
           $product->set_stock_status('outofstock');
         }
       }
-      error_log('-- product ' . $product->get_id() . ' is_in_stock: ' . $is_in_stock);
-      error_log('');
       return $is_in_stock;
     }
 
@@ -280,9 +269,6 @@ namespace StockDependenciesForWooCommerceAdmin {
      */
 
     function variation_is_in_stock($is_in_stock, $variation) {
-      error_log('  -- variation_is_in_stock - id: ' . $variation->get_id() . 
-        ', type: ' . $variation->get_type() .
-        ', managing_stock: ' . $variation->managing_stock());
       if ($variation->get_meta( '_stock_dependency')) {
         $stock_dependency_settings = json_decode($variation->get_meta('_stock_dependency'));
         if ( $stock_dependency_settings->enabled) {
@@ -305,7 +291,6 @@ namespace StockDependenciesForWooCommerceAdmin {
           }
         }
       }
-      error_log('  -- returning $is_in_stock: ' . $is_in_stock);
       return $is_in_stock;
     }
 
