@@ -417,6 +417,19 @@ namespace StockDependenciesForWooCommerceAdmin {
       }
     }
 
+    /** 
+     * 
+     * @param int $order_id
+     * @param array $items
+     * 
+     * When an order is created or edited in admin reduce the stock for any
+     * dependencies
+     */
+    function before_save_order_items($order_id, $items) {
+      $order = wc_get_order($order_id);
+      $this->reduce_order_stock($order);
+    }
+
     /**
      * 
      * @param array $args
