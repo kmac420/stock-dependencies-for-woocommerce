@@ -3,7 +3,7 @@ Contributors: KevinMcCall
 Tags: woocommerce,stock,dependencies,product,simple,variation,inventory,dependency
 Requires at least: 5.0
 Tested up to: 5.4
-Stable tag: 1.0
+Stable tag: 1.1
 Requires PHP: 7.0
 License: MIT
 License URI: https://github.com/kmac420/stock-dependencies-for-woocommerce/blob/master/LICENSE
@@ -72,10 +72,17 @@ No. Stock dependencies can only be created with a unique SKU of the product or v
 
 == Changelog ==
 
+= 1.1 =
+* Adds support for stock dependencies in orders created from within WooCommerce admin
+* Fixes an issue where product inventory status was not displayed correctly in WooCommerce admin
+
 = 1.0 =
 * Initial release of Stock Dependencies for WooCommerce
 
 == Upgrade Notice ==
+
+= 1.1 =
+This update adds support for orders created in admin and fixes an issue with order status displayed in admin
 
 = 1.0 =
 This is the initial release of the Stock Dependencies for WooCommerce plugin.
