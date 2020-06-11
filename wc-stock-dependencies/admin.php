@@ -352,9 +352,14 @@ namespace StockDependenciesForWooCommerceAdmin {
       $items = $order->get_items();
       // check each order item to see if there is stock dependency settings
       foreach ( $items as $item ) {
+        // check if the stock dependencies have already been reduced for the
+        // order item
         if ($item->get_meta('_stock_dependency_reduced')) {
-          error_log('wc_stock_dependencies: stock dependency already reduced for order ' . $order->get_id() . ' item ' . $item->get_id());
+          error_log('wc_stock_dependencies: stock dependency already reduced for order '
+            . $order->get_id() . ' item ' . $item->get_id());
         } else {
+          // the stock dependencies have not yet been reduced for the order
+          // item so we need to do that now
           $order_product = wc_get_product( $item['product_id'] );
           if ( $order_product->is_type('variable')) {
             $order_product = wc_get_product( $item['variation_id'] );
