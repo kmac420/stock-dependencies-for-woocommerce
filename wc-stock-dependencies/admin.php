@@ -352,67 +352,86 @@ namespace StockDependenciesForWooCommerceAdmin {
       $items = $order->get_items();
       // check each order item to see if there is stock dependency settings
       foreach ( $items as $item ) {
-        $order_product = wc_get_product( $item['product_id'] );
-        if ( $order_product->is_type('variable')) {
-          $order_product = wc_get_product( $item['variation_id'] );
-        }
-        if ($order_product->get_meta( '_stock_dependency')) {
-          $stock_dependency_settings_string = $order_product->get_meta('_stock_dependency');
-          $stock_dependency_settings = json_decode($stock_dependency_settings_string);
-          $order_item_qty = $item->get_quantity();
-          if ( $stock_dependency_settings->enabled) {
-            // for each stock dependency sku, decrease the stock by the correct amount
-            // and create a note on the order
-            foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
-              if ($stock_dependency->sku) {
-                $dependency_product = $this->get_product_by_sku($stock_dependency->sku);
-                $old_stock_quantity = $dependency_product->get_stock_quantity();
-                $new_stock = wc_update_product_stock(
-                  $dependency_product,
-                  $order_item_qty * $stock_dependency->qty,
-                  'decrease' );
-                if ( is_wp_error( $new_stock ) ) {
-                  $order->add_order_note( sprintf(
-                    __('Unable to reduce stock for dependency SKU %s from %s to %s (by quantity %s)', 'woocommerce' ),
-                    $dependency_product->get_sku(),
-                    $old_stock_quantity,
-                    $order_item_qty * $stock_dependency->qty )
-                  );
-                } else {
-                  $order->add_order_note( sprintf(
-                    __('Reduced order stock for dependency SKU %s from %s by quantity %s', 'woocommerce' ),
-                    $dependency_product->get_sku(),
-                    $old_stock_quantity,
-                    $order_item_qty * $stock_dependency->qty )
-                  );
+        // check if the stock dependencies have already been reduced for the
+        // order item
+        if ($item->get_meta('_stock_dependency_reduced')) {
+          error_log('wc_stock_dependencies: stock dependency already reduced for order '
+            . $order->get_id() . ' item ' . $item->get_id());
+        } else {
+          // the stock dependencies have not yet been reduced for the order
+          // item so we need to do that now
+          $order_product = wc_get_product( $item['product_id'] );
+          if ( $order_product->is_type('variable')) {
+            $order_product = wc_get_product( $item['variation_id'] );
+          }
+          if ($order_product->get_meta( '_stock_dependency')) {
+            $stock_dependency_settings_string = $order_product->get_meta('_stock_dependency');
+            $stock_dependency_settings = json_decode($stock_dependency_settings_string);
+            $order_item_qty = $item->get_quantity();
+            if ( $stock_dependency_settings->enabled) {
+              // for each stock dependency sku, decrease the stock by the correct amount
+              // and create a note on the order
+              foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
+                if ($stock_dependency->sku) {
+                  $dependency_product = $this->get_product_by_sku($stock_dependency->sku);
+                  $old_stock_quantity = $dependency_product->get_stock_quantity();
+                  $new_stock = wc_update_product_stock(
+                    $dependency_product,
+                    $order_item_qty * $stock_dependency->qty,
+                    'decrease' );
+                  if ( is_wp_error( $new_stock ) ) {
+                    $order->add_order_note( sprintf(
+                      __('Unable to reduce stock for dependency SKU %s from %s to %s (by quantity %s)', 'woocommerce' ),
+                      $dependency_product->get_sku(),
+                      $old_stock_quantity,
+                      $order_item_qty * $stock_dependency->qty )
+                    );
+                  } else {
+                    $add_order_item_meta = wc_add_order_item_meta(
+                      $item->get_id(),
+                      '_stock_dependency_reduced',
+                      1,
+                      true
+                    );
+                    $order->add_order_note( sprintf(
+                      __('Reduced order stock for dependency SKU %s from %s by quantity %s', 'woocommerce' ),
+                      $dependency_product->get_sku(),
+                      $old_stock_quantity,
+                      $order_item_qty * $stock_dependency->qty )
+                    );
+                  }
                 }
               }
-            }
-            // reset the ordered item stock level to 0
-            $new_stock = wc_update_product_stock( $order_product, 0, 'set' );
-            $order_product_sku = $order_product->get_sku();
-            if ( is_wp_error( $new_stock ) ) {
-              $order->add_order_note( sprintf(
-                __('Unable to set stock for SKU %s to 0', 'woocommerce' ),
-                $order_product_sku )
-              );
-            } else {
-              $order->add_order_note( sprintf(
-                __('Reset order stock for SKU %s to 0', 'woocommerce' ),
-                $order_product_sku )
-              );
+              // reset the ordered item stock level to 0
+              $new_stock = wc_update_product_stock( $order_product, 0, 'set' );
+              $order_product_sku = $order_product->get_sku();
+              if ( is_wp_error( $new_stock ) ) {
+                $order->add_order_note( sprintf(
+                  __('Unable to set stock for SKU %s to 0', 'woocommerce' ),
+                  $order_product_sku )
+                );
+              } else {
+                $order->add_order_note( sprintf(
+                  __('Reset order stock for SKU %s to 0', 'woocommerce' ),
+                  $order_product_sku )
+                );
+              }
+              // Add the stock dependency settings to the order item so that if a return
+              // is processed we will know the stock dependency settings that were used
+              // for this order item and not assume that the stock dependency settings 
+              // have not changed
+              if ($item->get_meta( '_stock_dependency')) {
+                error_log('wc_stock_dependencies: stock dependency already set for order ' . $order->get_id() . ' item ' . $item->get_id());
+              } else {
+                $add_order_item_meta = wc_add_order_item_meta(
+                  $item->get_id(),
+                  '_stock_dependency',
+                  $stock_dependency_settings_string,
+                  true
+                );
+              }
             }
           }
-          // Add the stock dependency settings to the order item so that if a return
-          // is processed we will know the stock dependency settings that were used
-          // for this order item and not assume that the stock dependency settings 
-          // have not changed
-          $add_order_item_meta = wc_add_order_item_meta(
-          $item->get_id(),
-          '_stock_dependency',
-          $stock_dependency_settings_string,
-          false
-          );
         }
       }
     }
@@ -439,7 +458,8 @@ namespace StockDependenciesForWooCommerceAdmin {
      */
 
     function hidden_order_itemmeta($args) {
-      $args[] = '_stock_dependency';
+      array_push($args, '_stock_dependency');
+      array_push($args, '_stock_dependency_reduced');
       return $args;
     }
 
