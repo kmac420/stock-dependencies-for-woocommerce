@@ -4,7 +4,7 @@
 Plugin Name: Stock Dependencies for WooCommerce
 Plugin URI: https://github.com/kmac420/stock-dependencies-for-woocommerce
 Description: Make the products and variations in your WooCommerce store dependent on the inventory of your other products or variations with Stock Dependencies for WooCommerce.
-Version: 1.1.2
+Version: 1.2
 Author: Kevin McCall
 Author URI: https://kef.ca
 License: MIT
@@ -26,6 +26,7 @@ namespace StockDependenciesForWooCommerce {
   add_action( 'woocommerce_product_get_stock_quantity', array( new Admin\Admin(), 'product_get_stock_quantity' ), 10, 2 );
   add_action( 'woocommerce_product_variation_get_stock_quantity', array( new Admin\Admin(), 'product_get_stock_quantity' ), 10, 2 );
   add_action( 'woocommerce_before_save_order_items', array( new Admin\Admin(), 'before_save_order_items'), 10, 2);
+  add_action( 'woocommerce_restock_refunded_item', array( new Admin\Admin(), 'restock_refunded_item'), 10, 5);
   add_filter( 'woocommerce_product_is_in_stock', array( new Admin\Admin(), 'product_is_in_stock' ), 10, 2 );
   add_filter( 'woocommerce_variation_is_in_stock', array( new Admin\Admin(), 'product_is_in_stock' ), 10, 2 );
   add_filter( 'woocommerce_product_get_stock_status', array( new Admin\Admin(), 'product_get_stock_status' ), 10, 2 );
