@@ -354,10 +354,7 @@ namespace StockDependenciesForWooCommerceAdmin {
       foreach ( $items as $item ) {
         // check if the stock dependencies have already been reduced for the
         // order item
-        if ($item->get_meta('_stock_dependency_reduced')) {
-          error_log('wc_stock_dependencies: stock dependency already reduced for order '
-            . $order->get_id() . ' item ' . $item->get_id());
-        } else {
+        if ( ! $item->meta_exists('_stock_dependency_reduced') ) {
           // the stock dependencies have not yet been reduced for the order
           // item so we need to do that now
           $order_product = wc_get_product( $item['product_id'] );
@@ -381,9 +378,10 @@ namespace StockDependenciesForWooCommerceAdmin {
                     'decrease' );
                   if ( is_wp_error( $new_stock ) ) {
                     $order->add_order_note( sprintf(
-                      __('Unable to reduce stock for dependency SKU %s from %s to %s (by quantity %s)', 'woocommerce' ),
+                      __('Unable to reduce stock for dependency SKU %s from %s to %s [-%s]', 'woocommerce' ),
                       $dependency_product->get_sku(),
                       $old_stock_quantity,
+                      $old_stock_quantity - ( $order_item_qty * $stock_dependency->qty ),
                       $order_item_qty * $stock_dependency->qty )
                     );
                   } else {
@@ -394,9 +392,10 @@ namespace StockDependenciesForWooCommerceAdmin {
                       true
                     );
                     $order->add_order_note( sprintf(
-                      __('Reduced order stock for dependency SKU %s from %s by quantity %s', 'woocommerce' ),
+                      __('Reduced order stock for dependency SKU %s from %s to %s [-%s]', 'woocommerce' ),
                       $dependency_product->get_sku(),
                       $old_stock_quantity,
+                      $old_stock_quantity - ( $order_item_qty * $stock_dependency->qty ),
                       $order_item_qty * $stock_dependency->qty )
                     );
                   }
@@ -420,9 +419,7 @@ namespace StockDependenciesForWooCommerceAdmin {
               // is processed we will know the stock dependency settings that were used
               // for this order item and not assume that the stock dependency settings 
               // have not changed
-              if ($item->get_meta( '_stock_dependency')) {
-                error_log('wc_stock_dependencies: stock dependency already set for order ' . $order->get_id() . ' item ' . $item->get_id());
-              } else {
+              if ( ! $item->meta_exists( '_stock_dependency') ) {
                 $add_order_item_meta = wc_add_order_item_meta(
                   $item->get_id(),
                   '_stock_dependency',
@@ -449,6 +446,100 @@ namespace StockDependenciesForWooCommerceAdmin {
       $this->reduce_order_stock($order);
     }
 
+    /** 
+     * 
+     * @param int $product_id
+     * @param int $old_stock
+     * @param int $new_stock
+     * @param object $order
+     * @param object $product
+     * 
+     */
+    function restock_refunded_item($product_id, $old_stock, $new_stock, $order, $product) {
+      $items = $order->get_items();
+      // check each order item to see if there is stock dependency settings
+      foreach ( $items as $item ) {
+        if ( $product->get_id() == $item->get_product()->get_id()) {
+          // proceed only if the product being restocked matches the product in the order line item
+          $order_item_refund_qty = $order->get_qty_refunded_for_item($item->get_id());
+          if ( $order_item_refund_qty < 0 ) {
+            // proceed only if some of the items were refunded
+            if ( $item->get_meta('_stock_dependency_restocked') ) {
+              $order_item_previously_refunded = $item->get_meta('_stock_dependency_restocked');
+            } else {
+              $order_item_previously_refunded = 0;
+            }
+            if ( $order_item_refund_qty < $order_item_previously_refunded ) {
+              // proceed only if the number of items being refunded is more than have previously been refunded
+              if ( $item->get_meta('_stock_dependency') ) {
+                // proceed only if the item has stock dependency settings
+                $item_stock_dependency_settings = json_decode($item->get_meta('_stock_dependency'));
+                if ( $item_stock_dependency_settings->enabled ) {
+                  // proceed only if the stock dependency settings were enabled when the order was placed
+                  foreach ($item_stock_dependency_settings->stock_dependency as $stock_dependency) {
+                    if ($stock_dependency->sku) {
+                      $dependency_product = $this->get_product_by_sku($stock_dependency->sku);
+                      $old_stock_quantity = $dependency_product->get_stock_quantity();
+                      // Note: the order_item_refund_qty will be a negative integer
+                      $new_stock = wc_update_product_stock(
+                        $dependency_product,
+                        -1 * ($order_item_refund_qty - $order_item_previously_refunded) * $stock_dependency->qty,
+                        'increase' );
+                      if ( is_wp_error( $new_stock ) ) {
+                        $order->add_order_note( sprintf(
+                          __('Unable to restock stock for dependency SKU %s from %s to %s [+%s]', 'woocommerce' ),
+                          $dependency_product->get_sku(),
+                          $old_stock_quantity,
+                          $old_stock_quantity + ( -1 * ($order_item_refund_qty - $order_item_previously_refunded) * $stock_dependency->qty ),
+                          ($order_item_refund_qty - $order_item_previously_refunded) * $stock_dependency->qty )
+                        );
+                      } else {
+                        if ( ! wc_get_order_item_meta($item->get_id(), '_stock_dependency_restocked')) {
+                          $add_order_item_meta = wc_add_order_item_meta(
+                            $item->get_id(),
+                            '_stock_dependency_restocked',
+                            $order_item_refund_qty,
+                            true
+                          );
+                        } else {
+                          $update_order_item_meta = wc_update_order_item_meta(
+                            $item->get_id(),
+                            '_stock_dependency_restocked',
+                            $order_item_refund_qty
+                          );
+                        }
+                        $order->add_order_note( sprintf(
+                          __('Restocked order stock for dependency SKU %s from %s to %s [+%s]', 'woocommerce' ),
+                          $dependency_product->get_sku(),
+                          $old_stock_quantity,
+                          $old_stock_quantity + ( -1 * ($order_item_refund_qty - $order_item_previously_refunded) * $stock_dependency->qty ),
+                          -1 * ($order_item_refund_qty - $order_item_previously_refunded) * $stock_dependency->qty )
+                        );
+                      }
+                    }
+                  }
+                  // reset the ordered item stock level to 0
+                  $new_stock = wc_update_product_stock( $item->get_product(), 0, 'set' );
+                  $order_item_product_sku = $item->get_product()->get_sku();
+                  if ( is_wp_error( $new_stock ) ) {
+                    $order->add_order_note( sprintf(
+                      __('Unable to set stock for SKU %s to 0', 'woocommerce' ),
+                      $order_item_product_sku )
+                    );
+                  } else {
+                    $order->add_order_note( sprintf(
+                      __('Reset order stock for SKU %s to 0', 'woocommerce' ),
+                      $order_item_product_sku )
+                    );
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
     /**
      * 
      * @param array $args
@@ -460,6 +551,7 @@ namespace StockDependenciesForWooCommerceAdmin {
     function hidden_order_itemmeta($args) {
       array_push($args, '_stock_dependency');
       array_push($args, '_stock_dependency_reduced');
+      array_push($args, '_stock_dependency_restocked');
       return $args;
     }
 
