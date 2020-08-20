@@ -112,5 +112,5 @@ As an example of using Stock Dependencies for WooCommerce for a variable WooComm
 
 ## Todo
 
-- [ ] Restock inventory for refunds
+- [x] Restock inventory for refunds
 - [ ] Check dependency SKU validity during configuration
