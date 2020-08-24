@@ -3,7 +3,7 @@ Contributors: KevinMcCall
 Tags: woocommerce,stock,dependencies,product,simple,variation,inventory,dependency
 Requires at least: 5.0
 Tested up to: 5.5
-Stable tag: 1.2
+Stable tag: 1.2.1
 Requires PHP: 7.0
 License: MIT
 License URI: https://github.com/kmac420/stock-dependencies-for-woocommerce/blob/master/LICENSE
@@ -76,6 +76,9 @@ No. Stock dependencies can only be created with a unique SKU of the product or v
 
 == Changelog ==
 
+= 1.2.1 =
+* Verified with WooCommerce 4.4
+
 = 1.2 =
 * Stock dependencies are restocked during a refund
 
@@ -93,6 +96,9 @@ No. Stock dependencies can only be created with a unique SKU of the product or v
 * Initial release of Stock Dependencies for WooCommerce
 
 == Upgrade Notice ==
+
+= 1.2.1 =
+Plugin verified with WooCommerce 4.4
 
 = 1.2 =
 Upgrade to get the latest feature and have your stock dependencies restocked during a refund
