@@ -27,6 +27,7 @@ namespace StockDependenciesForWooCommerce {
   add_action( 'woocommerce_product_variation_get_stock_quantity', array( new Admin\Admin(), 'product_get_stock_quantity' ), 10, 2 );
   add_action( 'woocommerce_before_save_order_items', array( new Admin\Admin(), 'before_save_order_items'), 10, 2);
   add_action( 'woocommerce_restock_refunded_item', array( new Admin\Admin(), 'restock_refunded_item'), 10, 5);
+  add_action( 'woocommerce_after_order_itemmeta', array( new Admin\Admin(), 'display_item_dependencies_in_admin'), 10, 3);
   add_filter( 'woocommerce_product_is_in_stock', array( new Admin\Admin(), 'product_is_in_stock' ), 10, 2 );
   add_filter( 'woocommerce_variation_is_in_stock', array( new Admin\Admin(), 'product_is_in_stock' ), 10, 2 );
   add_filter( 'woocommerce_product_get_stock_status', array( new Admin\Admin(), 'product_get_stock_status' ), 10, 2 );

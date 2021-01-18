@@ -557,6 +557,34 @@ namespace StockDependenciesForWooCommerceAdmin {
 
     /**
      * 
+     * @param int $item_id
+     * @param object $item
+     * @param object $product
+     * 
+     * When viewing the order in admin, display any stock dependiencies for each item in the order
+     * 
+     */
+
+    function display_item_dependencies_in_admin( $item_id, $item, $product ) {
+      if ( $item->meta_exists( '_stock_dependency') ) {
+        $item_stock_dependencies = $item->get_meta('_stock_dependency');
+        $item_stock_dependency_settings = json_decode($item_stock_dependencies);
+        if ( $item_stock_dependency_settings->enabled ) {
+          print('<table class="meta" style="margin-left: 10px;">');
+          print('<tbody class="meta-items">');
+          print('<tr><th>Stock Dependency SKU</th><th>Qty</th></tr>');
+          foreach ($item_stock_dependency_settings->stock_dependency as $item_stock_dependency) {
+            $dependency_product = $this->get_product_by_sku($item_stock_dependency->sku);
+            print('<tr><td><a href="' . get_edit_post_link($dependency_product->get_id()) . '">' . $item_stock_dependency->sku . '</a></td><td>' . $item_stock_dependency->qty . '</td></tr>');
+          }
+          print('</tbody>');
+          print('</table>');
+        }
+      }
+    }
+
+    /**
+     * 
      * @param array $links
      * 
      */
