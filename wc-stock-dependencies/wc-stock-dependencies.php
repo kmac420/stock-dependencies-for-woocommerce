@@ -10,7 +10,7 @@ Author URI: https://kef.ca
 License: MIT
 License URI: https://github.com/kmac420/stock-dependencies-for-woocommerce/blob/master/LICENSE
 WC requires at least: 4.0
-WC tested up to: 4.4
+WC tested up to: 4.9
 */
 
 namespace StockDependenciesForWooCommerce {
