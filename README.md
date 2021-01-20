@@ -52,6 +52,10 @@ Install the WooCommerce Stock Dependencies plugin
 1. Download and install the plugin from the [release page](https://github.com/kmac420/stock-dependencies-for-woocommerce/releases) or install directly from the [WordPress plugin directory](https://wordpress.org/plugins/stock-dependencies-for-woocommerce/).
 1. Activate the plugin.
 
+### **Important** WooCommerce Setting
+
+The Stock Dependencies for WooCommerce plugin will not work properly if your installation of WooCommerce has a (non-zero) value for the **Hold stock (minutes)** setting. To change this setting, navigate to the **WooCommerce > Settings > Products > Inventory** page and remove the value in the **Hold stock (minutes)** field and save your changes.
+
 ### Configuring Stock Dependencies for a simple product
 
 As an example of using Stock Dependencies for WooCommerce for a simple WooCommerce product, we will use the WooCommerce sample data and create a simple product called _Beanie with Logo 2-pack_ that has a dependency on the sample _Beanie with Logo_ product with a dependency quantity of 2.
@@ -109,6 +113,10 @@ As an example of using Stock Dependencies for WooCommerce for a variable WooComm
    - Click the **Add stock dependency** link to add another stock dependency row.
    - Add the dependency SKU _Woo-beanie-logo_ and quantity _1_ for the third stock dependency.
 1. Save your variation changes.
+
+### Allowing Backorders
+
+The Stock Dependencies for WooCommerce plugin supports dependencies on simple and variable products that are configured to allow backorders. In order to allow backorders on simple or variable products that have stock dependencies on other simple and/or variable products, you **must** enable backorders for the products on which there is a dependency **and** the product that has the dependency.
 
 ## Todo
 
