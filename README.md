@@ -121,4 +121,4 @@ The Stock Dependencies for WooCommerce plugin supports dependencies on simple an
 ## Todo
 
 - [x] Restock inventory for refunds
-- [ ] Check dependency SKU validity during configuration
+- [x] Check dependency SKU validity during configuration

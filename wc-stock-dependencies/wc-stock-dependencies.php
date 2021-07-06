@@ -4,7 +4,7 @@
 Plugin Name: Stock Dependencies for WooCommerce
 Plugin URI: https://github.com/kmac420/stock-dependencies-for-woocommerce
 Description: Make the products and variations in your WooCommerce store dependent on the inventory of your other products or variations with Stock Dependencies for WooCommerce.
-Version: 1.3.1
+Version: 1.4
 Author: Kevin McCall
 Author URI: https://kef.ca
 License: MIT
