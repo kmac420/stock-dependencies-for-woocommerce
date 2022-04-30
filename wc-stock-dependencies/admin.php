@@ -35,9 +35,41 @@ namespace StockDependenciesForWooCommerceAdmin {
      */
 
     function get_stock_dependency_meta ( $product ) {
-      if ( $product->get_meta('_stock_dependency')) {
+      if ( $product->get_meta('_stock_dependency') ) {
         $product_meta = $product->get_meta('_stock_dependency');
         return $this->update_product_data($product_meta);
+      } else {
+        return false;
+      }
+    }
+
+    /** 
+     * 
+     * @param WP_Order_Item $item
+     * 
+     * Get the stock dependency for the order item, if it exists
+     * 
+     */
+
+    function get_order_item_stock_dependencies ( $item ) {
+      if ( $item->get_meta('_stock_dependency') ) {
+        return json_decode( $item->get_meta('_stock_dependency') );
+      } else {
+        return false;
+      }
+    }
+
+    /** 
+     * 
+     * @param WP_Order_Item $item
+     * 
+     * Get the refunded quantity for the order item, if it exists
+     * 
+     */
+
+    function get_order_item_refunded_qty ( $item ) {
+      if ( $item->get_meta('_stock_dependency_restocked') ) {
+        return $item->get_meta('_stock_dependency_restocked');
       } else {
         return false;
       }
@@ -159,8 +191,8 @@ namespace StockDependenciesForWooCommerceAdmin {
     function admin_process_product_object( $product ) {
 
       if ( ! empty( $_POST['sdwc_product_stock_dependency'] ) ) {
-        $product_data = sanitize_text_field(stripslashes($_POST['sdwc_product_stock_dependency']));
-        if ( $this->validate_product_data($product_data)) {
+        $product_data = sanitize_text_field(stripslashes($_POST['sdwc_product_stock_dependency']) );
+        if ( $this->validate_product_data($product_data) ) {
           /*
            * Save the stock dependency data in the meta field for the product without the dependency's
            * product ID
@@ -190,8 +222,8 @@ namespace StockDependenciesForWooCommerceAdmin {
     function save_product_variation( $variation_id, $i ) {
       $variation = wc_get_product( $variation_id );
       if ( ! empty( $_POST['sdwc_variation_stock_dependency-'.$i] ) ) {
-        $product_data = sanitize_text_field(stripslashes($_POST['sdwc_variation_stock_dependency-'.$i]));
-        if ( $this->validate_product_data($product_data)) {
+        $product_data = sanitize_text_field(stripslashes($_POST['sdwc_variation_stock_dependency-'.$i]) );
+        if ( $this->validate_product_data($product_data) ) {
           /*
            * Save the stock dependency data in the meta field for the product without the dependency's
            * product ID
@@ -241,7 +273,7 @@ namespace StockDependenciesForWooCommerceAdmin {
          * If the transient exists then use it
          */
         $stock_dependency_settings = json_decode($transient_value);
-      } else if ( false !== ( $stock_dependency_settings_string = $this->get_stock_dependency_meta( $product ))) {
+      } else if ( false !== ( $stock_dependency_settings_string = $this->get_stock_dependency_meta( $product ) ) ) {
         /**
          * Get the stock dependency data from the post meta and create the transient
          */
@@ -267,7 +299,7 @@ namespace StockDependenciesForWooCommerceAdmin {
 
     function has_stock_dependencies( $product ) {
 
-      if ( false !== ($stock_dependency_settings = $this->get_stock_dependency_settings($product))) {
+      if ( false !== ($stock_dependency_settings = $this->get_stock_dependency_settings( $product ) ) ) {
         if ( $stock_dependency_settings->enabled ) {
           return true;
         }
@@ -287,18 +319,18 @@ namespace StockDependenciesForWooCommerceAdmin {
      */
 
     function product_get_stock_quantity($quantity, $product) {
-      if ($this->has_stock_dependencies($product)) {
+      if ($this->has_stock_dependencies($product) ) {
         $stock_dependency_settings = $this->get_stock_dependency_settings($product);
           foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
             if ($stock_dependency->sku) {
-              if (wc_get_product($stock_dependency->product_id)) {
+              if (wc_get_product($stock_dependency->product_id) ) {
                 $dependency_product = wc_get_product($stock_dependency->product_id);
                 if ($dependency_product) {
                   $dependency_product_available = $dependency_product->get_stock_quantity();
-                  if ( !isset($temp_stock_quantity)) {
+                  if ( !isset($temp_stock_quantity) ) {
                     $temp_stock_quantity = intdiv($dependency_product_available, $stock_dependency->qty);
                   } else {
-                    $temp_stock_quantity = min($temp_stock_quantity, intdiv($dependency_product_available, $stock_dependency->qty));
+                    $temp_stock_quantity = min($temp_stock_quantity, intdiv($dependency_product_available, $stock_dependency->qty) );
                   }
                 }
               } else {
@@ -324,7 +356,7 @@ namespace StockDependenciesForWooCommerceAdmin {
      */
 
     function product_is_in_stock($is_in_stock, $product) {
-      if ( $product->is_type('variable') && $product->has_child() && !$product->managing_stock()) {
+      if ( $product->is_type('variable') && $product->has_child() && !$product->managing_stock() ) {
          /** if the product type is variable, and the product has children (i.e. variations)
           *  and stock is not being managed at the product level (i.e. it is possibly being
           *  managed at the variation level) then check to see if there are stock dependencies
@@ -332,7 +364,7 @@ namespace StockDependenciesForWooCommerceAdmin {
           */
          foreach ($product->get_children() as $key => $variation_id) {
            $variation = wc_get_product($variation_id);
-           if ( $variation->is_type('variation') && $variation->managing_stock()) {
+           if ( $variation->is_type('variation') && $variation->managing_stock() ) {
              // $variation_check = $variation->is_in_stock();
              if ($variation->is_in_stock() || $variation->backorders_allowed() ) {
                /** if there is at least one variation that has stock then we will consider
@@ -352,22 +384,22 @@ namespace StockDependenciesForWooCommerceAdmin {
          } else {
            $product->set_stock_status('outofstock');
          }
-       } else if (( $product->is_type('simple') || $product->is_type('variation')) && $product->managing_stock() ) {
+       } else if ( ( $product->is_type('simple') || $product->is_type('variation') ) && $product->managing_stock() ) {
         /**
          * if the product is either a simple product or a product variation then and
          * inventory is being managed then check if there are stock dependencies that
          * affect the stock status
         */
-        if ($this->has_stock_dependencies($product)) {
+        if ($this->has_stock_dependencies($product) ) {
           $stock_dependency_settings = $this->get_stock_dependency_settings($product);
           $dependency_is_in_stock = true;
           // product has stock dependencies so check each dependency to see if in stock
           foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
             if ($stock_dependency->product_id) {
-              if (wc_get_product($stock_dependency->product_id)) {
+              if (wc_get_product($stock_dependency->product_id) ) {
                 $dependency_product = wc_get_product($stock_dependency->product_id);
                 $dependency_product_available = $dependency_product->get_stock_quantity();
-                if (intdiv($dependency_product_available, $stock_dependency->qty) <= 0 && !$dependency_product->backorders_allowed()) {
+                if (intdiv($dependency_product_available, $stock_dependency->qty) <= 0 && !$dependency_product->backorders_allowed() ) {
                   $dependency_is_in_stock = false;
                   /**
                    * if there is at least one dependency that is not in stock then we will consider
@@ -415,11 +447,11 @@ namespace StockDependenciesForWooCommerceAdmin {
      */
 
     public function product_get_stock_status($status, $product) {
-      if ($this->has_stock_dependencies($product)) {
+      if ($this->has_stock_dependencies($product) ) {
         $stock_dependency_settings = $this->get_stock_dependency_settings($product);
         foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
           if ($stock_dependency->product_id) {
-            if (wc_get_product($stock_dependency->product_id)) {
+            if (wc_get_product($stock_dependency->product_id) ) {
               $dependency_product = wc_get_product($stock_dependency->product_id);
               $dependency_product_available = $dependency_product->get_stock_quantity();
               if (intdiv($dependency_product_available, $stock_dependency->qty) <= 0) {
@@ -463,10 +495,10 @@ namespace StockDependenciesForWooCommerceAdmin {
           // the stock dependencies have not yet been reduced for the order
           // item so we need to do that now
           $order_product = wc_get_product( $item['product_id'] );
-          if ( $order_product->is_type('variable')) {
+          if ( $order_product->is_type('variable') ) {
             $order_product = wc_get_product( $item['variation_id'] );
           }
-          if ($this->has_stock_dependencies($order_product)) {
+          if ($this->has_stock_dependencies($order_product) ) {
             $stock_dependency_settings = $this->get_stock_dependency_settings($order_product);
             $order_item_qty = $item->get_quantity();
             // for each stock dependency sku, decrease the stock by the correct amount
@@ -543,6 +575,7 @@ namespace StockDependenciesForWooCommerceAdmin {
      * When an order is created or edited in admin reduce the stock for any
      * dependencies
      */
+
     function before_save_order_items($order_id, $items) {
       $order = wc_get_order($order_id);
       $this->reduce_order_stock($order);
@@ -557,25 +590,23 @@ namespace StockDependenciesForWooCommerceAdmin {
      * @param object $product
      * 
      */
+
     function restock_refunded_item($product_id, $old_stock, $new_stock, $order, $product) {
       $items = $order->get_items();
       // check each order item to see if there is stock dependency settings
       foreach ( $items as $item ) {
-        if ( $product->get_id() == $item->get_product()->get_id()) {
+        if ( $product->get_id() == $item->get_product()->get_id() ) {
           // proceed only if the product being restocked matches the product in the order line item
-          $order_item_refund_qty = $order->get_qty_refunded_for_item($item->get_id());
+          $order_item_refund_qty = $order->get_qty_refunded_for_item($item->get_id() );
           if ( $order_item_refund_qty < 0 ) {
             // proceed only if some of the items were refunded
-            if ( $item->get_meta('_stock_dependency_restocked') ) {
-              $order_item_previously_refunded = $item->get_meta('_stock_dependency_restocked');
-            } else {
+            if ( false === ( $order_item_previously_refunded = $this->get_order_item_refunded_qty($item) ) ) {
               $order_item_previously_refunded = 0;
             }
             if ( $order_item_refund_qty < $order_item_previously_refunded ) {
               // proceed only if the number of items being refunded is more than have previously been refunded
-              if ( $item->get_meta('_stock_dependency') ) {
+              if ( false !== ( $item_stock_dependency_settings = $this->get_order_item_stock_dependencies ($item) ) ) {
                 // proceed only if the item has stock dependency settings
-                $item_stock_dependency_settings = json_decode($this->get_stock_dependency_meta($item));
                 if ( $item_stock_dependency_settings->enabled ) {
                   // proceed only if the stock dependency settings were enabled when the order was placed
                   foreach ($item_stock_dependency_settings->stock_dependency as $stock_dependency) {
@@ -589,14 +620,14 @@ namespace StockDependenciesForWooCommerceAdmin {
                         'increase' );
                       if ( is_wp_error( $new_stock ) ) {
                         $order->add_order_note( sprintf(
-                          __('Unable to restock stock for dependency SKU %s from %s to %s [+%s]', 'woocommerce' ),
+                          __('[Refunded] Unable to restock stock for dependency SKU %s from %s to %s [+%s]', 'woocommerce' ),
                           $dependency_product->get_sku(),
                           $old_stock_quantity,
                           $old_stock_quantity + ( -1 * ($order_item_refund_qty - $order_item_previously_refunded) * $stock_dependency->qty ),
                           ($order_item_refund_qty - $order_item_previously_refunded) * $stock_dependency->qty )
                         );
                       } else {
-                        if ( ! wc_get_order_item_meta($item->get_id(), '_stock_dependency_restocked')) {
+                        if ( ! wc_get_order_item_meta($item->get_id(), '_stock_dependency_restocked') ) {
                           $add_order_item_meta = wc_add_order_item_meta(
                             $item->get_id(),
                             '_stock_dependency_restocked',
@@ -611,7 +642,7 @@ namespace StockDependenciesForWooCommerceAdmin {
                           );
                         }
                         $order->add_order_note( sprintf(
-                          __('Restocked order stock for dependency SKU %s from %s to %s [+%s]', 'woocommerce' ),
+                          __('[Refunded] Restocked order stock for dependency SKU %s from %s to %s [+%s]', 'woocommerce' ),
                           $dependency_product->get_sku(),
                           $old_stock_quantity,
                           $old_stock_quantity + ( -1 * ($order_item_refund_qty - $order_item_previously_refunded) * $stock_dependency->qty ),
@@ -639,6 +670,83 @@ namespace StockDependenciesForWooCommerceAdmin {
             }
           }
         }
+      }
+    }
+
+    /** 
+     * 
+     * @param int $order_id
+     * 
+     * If an order is cancelled then restock the stock dependency items excluding
+     * any that have already been restocked due to a refund
+     * 
+     */
+
+    function restock_cancelled_order($order_id) {
+      $order = wc_get_order($order_id);
+      $order_items = $order->get_items();
+      if ( $order_items ) {
+        foreach( $order_items as $item_id => $item ) {
+          // check if order item has stock dependencies
+          if ( false !== ( $item_stock_dependencies = $this->get_order_item_stock_dependencies( $item ) ) ) {
+            // this item has stock dependencies
+            if ( $item_stock_dependencies->enabled ) {
+              // stock dependencies are enabled for this item
+              // check if any order item qty has already been refunded and restocked
+              if ( false === ( $order_item_previously_refunded = $this->get_order_item_refunded_qty( $item ) ) ) {
+                $order_item_previously_refunded = 0;
+              }
+              // Note that order_item_previously_refunded will be zero or a negative number
+              $restock_qty = $item->get_quantity() + $order_item_previously_refunded;
+              $this->restock_order_item($order, $item, $item_stock_dependencies, $restock_qty);
+            }
+          }
+        }
+      }
+    }
+
+    /** 
+     * 
+     * @param WC_Order $order
+     * @param WC_Order_Item $order_item
+     * @param array $item_stock_dependencies
+     * @param int $restock_qty
+     * 
+     * Restock the order items
+     * 
+     */
+
+    function restock_order_item ( $order, $order_item, $item_stock_dependencies, $restock_qty ) {
+      // double check that the stock dependencies are enabled
+      if ( $item_stock_dependencies->enabled ) {
+        foreach ( $item_stock_dependencies->stock_dependency as $item_stock_dependency ) {
+          if ( false !== ( wc_update_product_stock($this->get_product_by_sku( $item_stock_dependency->sku ), $item_stock_dependency->qty * $restock_qty, 'increase') ) ) {
+            $order->add_order_note( sprintf(
+              __('[Cancelled] Restocked order stock for dependency SKU %s [+%s]', 'woocommerce' ),
+              $item_stock_dependency->sku,
+              $item_stock_dependency->qty * $restock_qty
+            ) );
+          } else {
+            $order->add_order_note( sprintf(
+              __('[Cancelled] Unable to restock stock for dependency SKU %s [+%s]', 'woocommerce' ),
+              $item_stock_dependency->sku,
+              $item_stock_dependency->qty * $restock_qty
+            ) );
+          }
+        }
+      }
+      // Set the inventory for the item with dependencies to 0
+      $order_item_product_sku = $order_item->get_product()->get_sku();
+      if ( false === ( wc_update_product_stock( $order_item->get_product(), 0, 'set' ) ) ) {
+        $order->add_order_note( sprintf(
+          __('Unable to set stock for SKU %s to 0', 'woocommerce' ),
+          $order_item_product_sku )
+        );
+      } else {
+        $order->add_order_note( sprintf(
+          __('Reset order stock for SKU %s to 0', 'woocommerce' ),
+          $order_item_product_sku )
+        );
       }
     }
 
@@ -678,9 +786,9 @@ namespace StockDependenciesForWooCommerceAdmin {
             $dependency_product = wc_get_product($item_stock_dependency->product_id);
             $dependency_text = '<div class="wc-order-item-sku"><strong>SKU</strong>: <a href="';
             if ( $dependency_product->get_type() === 'variation' ) {
-              $dependency_text .= get_edit_post_link($dependency_product->get_parent_id());
+              $dependency_text .= get_edit_post_link($dependency_product->get_parent_id() );
             } else {
-              $dependency_text .= get_edit_post_link($dependency_product->get_id());
+              $dependency_text .= get_edit_post_link($dependency_product->get_id() );
             }
             $dependency_text .= '">' . $item_stock_dependency->sku . '</a>&nbsp;<strong>Qty</strong>: ' . $item_stock_dependency->qty . '</div>';
             print($dependency_text);
@@ -715,8 +823,8 @@ namespace StockDependenciesForWooCommerceAdmin {
         global $post;
         $post_type = get_post_type( $post );
         if ( $post_type == 'product') {
-          wp_enqueue_script('sdwc_admin_settings', plugins_url("/settings.js", __FILE__));
-          wp_enqueue_style('sdwc_admin_styles', plugins_url("/admin.css", __FILE__));
+          wp_enqueue_script('sdwc_admin_settings', plugins_url("/settings.js", __FILE__) );
+          wp_enqueue_style('sdwc_admin_styles', plugins_url("/admin.css", __FILE__) );
         }
       }
     }

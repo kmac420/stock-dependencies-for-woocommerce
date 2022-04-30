@@ -2,8 +2,8 @@
 Contributors: KevinMcCall
 Tags: woocommerce,stock,dependencies,product,simple,variation,inventory,dependency
 Requires at least: 5.0
-Tested up to: 5.7
-Stable tag: 1.4
+Tested up to: 5.9
+Stable tag: 1.5
 Requires PHP: 7.0
 License: MIT
 License URI: https://github.com/kmac420/stock-dependencies-for-woocommerce/blob/master/LICENSE
@@ -35,9 +35,9 @@ When a customer views a product with dependencies in your WooCommerce store, the
 
 Customers will only see the product they selected, and not the products upon which it is dependent, in their shopping cart, during the checkout process, and on their receipt.
 
-## Restocking
+## Restocking Refunds and Cancelled Orders
 
-When you issue a refund for a product that has a stock dependency, the plugin will restock the dependency products.
+When you issue a refund or cancel an order that has stock dependencies, the plugin will restock the dependency products.
 
 == Installation ==
 
@@ -76,6 +76,10 @@ No. Stock dependencies can only be created with a unique SKU of the product or v
 
 == Changelog ==
 
+= 1.5 =
+* Stores product IDs for stock dependencies in WordPress transients to speed up lookups
+* Cancelling an order restocks dependencies
+
 = 1.4 =
 * Enforces SKU validity during dependency configuration
 * Reduces the need to lookup product IDs from SKUs by storing the ID in the dependency metadata
@@ -110,6 +114,11 @@ No. Stock dependencies can only be created with a unique SKU of the product or v
 * Initial release of Stock Dependencies for WooCommerce
 
 == Upgrade Notice ==
+
+= 1.5 =
+Performance improvements
+Cancelling an order restocks dependencies
+Verified compatibility with WordPress 5.9 and WooCommerce 6.4
 
 = 1.4 =
 Reduces frequency of certain plugin queries
