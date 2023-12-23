@@ -199,7 +199,6 @@ class StockDependenciesForWooCommerce {
       manageStockElement.checked = "checked";
       manageStockElement.readOnly = true;
       const stockQtyElement = document.getElementById("_stock");
-      stockQtyElement.value = 0;
       stockQtyElement.readOnly = true;
     }
     checkbox.onclick = (function (x) {
@@ -217,7 +216,6 @@ class StockDependenciesForWooCommerce {
           manageStockElement.checked = "checked";
           manageStockElement.readOnly = true;
           const stockQtyElement = document.getElementById("_stock");
-          stockQtyElement.value = 0;
           stockQtyElement.readOnly = true;
         } else {
           stockSettingsElement.style.display = "none";
@@ -274,7 +272,6 @@ class StockDependenciesForWooCommerce {
       // get the variation stock quantity input by id and then set
       // the values and make readonly
       let stockQtyElement = document.getElementById(`variable_stock${x}`);
-      stockQtyElement.value = 0;
       stockQtyElement.readOnly = true;
     }
     // checkbox.onclick = sdwc_enableCheckboxClick;
@@ -307,7 +304,6 @@ class StockDependenciesForWooCommerce {
           // get the variation stock quantity input by id and then set
           // the values and make readonly
           let stockQtyElement = document.getElementById(`variable_stock${x}`);
-          stockQtyElement.value = 0;
           stockQtyElement.readOnly = true;
         } else {
           stockSettingsElement.style.display = "none";
@@ -944,9 +940,8 @@ class StockDependenciesForWooCommerce {
           stock_dependency: dependencyStock,
         };
         // update the hidden field with the stock dependency settings in JSON format
-        document.getElementById(
-          `sdwc_product_stock_dependency`
-        ).value = JSON.stringify(productSettings);
+        document.getElementById(`sdwc_product_stock_dependency`).value =
+          JSON.stringify(productSettings);
       } else {
         // The checkbox isn't in the DOM yet
         return false;
@@ -1016,9 +1011,8 @@ class StockDependenciesForWooCommerce {
           stock_dependency: dependencyStock,
         };
         // update the hidden field with the stock dependency settings in JSON format
-        document.getElementById(
-          `sdwc_variation_stock_dependency-${x}`
-        ).value = JSON.stringify(variationSettings);
+        document.getElementById(`sdwc_variation_stock_dependency-${x}`).value =
+          JSON.stringify(variationSettings);
       } else {
         // The checkbox isn't in the DOM yet
         return false;
@@ -1046,7 +1040,8 @@ jQuery(document).ready(function ($) {
     jQuery("#woocommerce-product-data").on(
       "woocommerce_variations_loaded",
       function (event) {
-        createdSettings = wooCommerceStockDependencies.createVariationSettings();
+        createdSettings =
+          wooCommerceStockDependencies.createVariationSettings();
       }
     );
   }

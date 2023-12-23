@@ -2,8 +2,8 @@
 Contributors: KevinMcCall
 Tags: woocommerce,stock,dependencies,product,simple,variation,inventory,dependency
 Requires at least: 5.0
-Tested up to: 5.9
-Stable tag: 1.5
+Tested up to: 6.4
+Stable tag: 1.6
 Requires PHP: 7.0
 License: MIT
 License URI: https://github.com/kmac420/stock-dependencies-for-woocommerce/blob/master/LICENSE
@@ -75,6 +75,11 @@ No. Stock dependencies can only be created with a unique SKU of the product or v
 3. The inventory of each product dependency is automatically reduced by the appropriate number based on the order quantity and the dependency quantity.
 
 == Changelog ==
+
+= 1.6 =
+* Confirmed compatibility with WooCommerce High Performance Order Tables
+* Confirmed compatibility with WordPress 6.4
+* Plugin will now update the inventory quantity in admin to match the quantity determined by the stock depedencies after each purchase, refund, or order cancellation. Note that this only affects the behaviour of the plugin in admin as the actual inventory is calculated every time a product page is loaded in the shop
 
 = 1.5 =
 * Stores product IDs for stock dependencies in WordPress transients to speed up lookups
