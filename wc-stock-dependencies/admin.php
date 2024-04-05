@@ -845,9 +845,10 @@ namespace StockDependenciesForWooCommerceAdmin {
      * 
      */
 
-    function actionLinks($links)
+    function action_links($links)
     {
       $links[] = '<a href="https://github.com/kmac420/stock-dependencies-for-woocommerce#stock-dependencies-for-woocommerce-plugin" target="_blank">Documentation</a>';
+      $links[] = '<a href="tools.php?page=stock-dependencies-settings">Tools</a>';
       return $links;
     }
 
@@ -870,6 +871,139 @@ namespace StockDependenciesForWooCommerceAdmin {
           wp_enqueue_style('sdwc_admin_styles', plugins_url("/admin.css", __FILE__));
         }
       }
+    }
+
+    /**
+     * 
+     * Query the WordPress database to get all the saved Stock Dependencies
+     * 
+     * */
+
+    function get_all_stock_dependency_settings()
+    {
+
+      global $wpdb;
+
+      $meta_values = $wpdb->get_results("
+        SELECT post_id, meta_value
+        FROM wp_postmeta
+        WHERE meta_key = '_stock_dependency';
+      ");
+
+      return $meta_values;
+    }
+
+    /**
+     * 
+     * Query the WordPress database to get all the saved Stock Dependencies
+     * 
+     * */
+
+    function delete_all_stock_dependency_transients()
+    {
+
+      global $wpdb;
+
+      $query_results = $wpdb->get_results("
+        SELECT count(*) AS num_transients
+        FROM $wpdb->options
+        WHERE option_name LIKE '_transient_sdwc-product-settings%';
+      ");
+
+      $num_transients = $query_results[0]->num_transients;
+
+      echo ("<p>Clearing transients ... ");
+      if ($num_transients == 0) {
+        echo ("No transients to clear");
+      } else {
+        $wpdb->query(
+          $wpdb->prepare(
+            "
+              DELETE FROM $wpdb->options
+              WHERE option_name LIKE '_transient_sdwc-product-settings%';
+            "
+          )
+        );
+
+        $query_results = $wpdb->get_results(
+          "
+            SELECT count(*) AS num_transients
+            FROM $wpdb->options
+            WHERE option_name LIKE '_transient_sdwc-product-settings%';
+          "
+        );
+        echo ("<span style=\"color:green;\">Done!</span>");
+      }
+      echo ("</p>");
+    }
+
+    public function settings_page_html()
+    {
+?>
+      <div class="wrap">
+        <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+        <h2>Remove Stock Dependency Plugin DB Transients</h2>
+        <p>This plugin uses WordPress transients to store some stock dependency
+          settings for each product, in order to improve performance. These will
+          be automatically cleaned up by WordPress and recreated by the pluing as
+          needed, but if your site is not working correctly you can remove the
+          plugin transients. Doing this will not break anything but your site
+          might perform slower until the transients are recreated when each
+          product is viewed in your store.</p>
+        <a class="submit button button-primary" href="tools.php?page=stock-dependencies-settings&clear-transients=true">Clear Plugin Transients</a>
+        <?php
+        $clear_transients = filter_input(INPUT_GET, "clear-transients");
+
+        if ($clear_transients) {
+          $this->delete_all_stock_dependency_transients();
+        }
+        ?>
+        <?php
+        $dependency_settings = $this->get_all_stock_dependency_settings();
+
+        // print('<h2>Products With Stock Dependencies Enabled</h2>');
+        // foreach ($dependency_settings as $dependency) {
+        //   if (get_post_type($dependency->post_id) == 'product') {
+        //     $product = wc_get_product($dependency->post_id);
+        //     $product_dependency_settings = json_decode($dependency->meta_value);
+        //     if ($product_dependency_settings->enabled) {
+        //       if ($product->is_type(['simple', 'variable'])) {
+        //         echo ("Product: <a href=\"" . get_edit_post_link($product->get_id()) . "\">" . $product->get_name() . "</a><br />");
+        //         echo ("Product type: " . $product->get_type() . "<br />");
+        //         echo ("Managed stock: ");
+        //         echo ($product->get_manage_stock() ? 'True' : 'False');
+        //         echo ("<br />");
+        //         echo ("<div style='margin-left: 20px;' class='wcsd-admin-dependency-list'>");
+        //         foreach ($product_dependency_settings->stock_dependency as $single_dependency) {
+        //           $dependency_product = $this->get_product_by_sku($single_dependency->sku);
+        //           echo ("Dependency product: <a href=\"" . get_edit_post_link($dependency_product->get_id()) . "\">" . $dependency_product->get_name() . "</a> ");
+        //           echo ("(");
+        //           echo ("SKU: " . $dependency_product->get_sku() . ")");
+        //           echo ("<br />");
+        //           echo ("Dependency quantity: " . $single_dependency->qty);
+        //           echo ("<br />");
+        //         }
+        //         echo ("</div>");
+        //         echo ("<br />");
+        //       }
+        //     }
+        //   }
+        // }
+        ?>
+      </div>
+<?php
+    }
+
+    function settings_page()
+    {
+      add_submenu_page(
+        'tools.php',
+        'Stock Dependencies',
+        'Stock Dependencies',
+        'manage_options',
+        'stock-dependencies-settings',
+        array($this, 'settings_page_html')
+      );
     }
   }
 }
