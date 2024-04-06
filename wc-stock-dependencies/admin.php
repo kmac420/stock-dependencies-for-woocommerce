@@ -960,35 +960,6 @@ namespace StockDependenciesForWooCommerceAdmin {
         ?>
         <?php
         $dependency_settings = $this->get_all_stock_dependency_settings();
-
-        // print('<h2>Products With Stock Dependencies Enabled</h2>');
-        // foreach ($dependency_settings as $dependency) {
-        //   if (get_post_type($dependency->post_id) == 'product') {
-        //     $product = wc_get_product($dependency->post_id);
-        //     $product_dependency_settings = json_decode($dependency->meta_value);
-        //     if ($product_dependency_settings->enabled) {
-        //       if ($product->is_type(['simple', 'variable'])) {
-        //         echo ("Product: <a href=\"" . get_edit_post_link($product->get_id()) . "\">" . $product->get_name() . "</a><br />");
-        //         echo ("Product type: " . $product->get_type() . "<br />");
-        //         echo ("Managed stock: ");
-        //         echo ($product->get_manage_stock() ? 'True' : 'False');
-        //         echo ("<br />");
-        //         echo ("<div style='margin-left: 20px;' class='wcsd-admin-dependency-list'>");
-        //         foreach ($product_dependency_settings->stock_dependency as $single_dependency) {
-        //           $dependency_product = $this->get_product_by_sku($single_dependency->sku);
-        //           echo ("Dependency product: <a href=\"" . get_edit_post_link($dependency_product->get_id()) . "\">" . $dependency_product->get_name() . "</a> ");
-        //           echo ("(");
-        //           echo ("SKU: " . $dependency_product->get_sku() . ")");
-        //           echo ("<br />");
-        //           echo ("Dependency quantity: " . $single_dependency->qty);
-        //           echo ("<br />");
-        //         }
-        //         echo ("</div>");
-        //         echo ("<br />");
-        //       }
-        //     }
-        //   }
-        // }
         ?>
       </div>
 <?php
