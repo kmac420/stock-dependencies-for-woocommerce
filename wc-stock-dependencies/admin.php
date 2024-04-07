@@ -29,10 +29,10 @@ namespace StockDependenciesForWooCommerceAdmin {
      * 
      * @param WC_Product $product
      * 
-     * The ID of the dependency product is not stored with the SKU
-     * in the meta table as the product ID *might* change. If we
-     * need to get the settings from the meta table then we need
-     * to get the product ID for all the dependencies
+     * The ID of the dependency product is not stored with the SKU in the meta
+     * table as the product ID *might* change. If we need to get the settings
+     * from the meta table then we need to get the product ID for all the
+     * dependencies
      * 
      */
 
@@ -203,13 +203,13 @@ namespace StockDependenciesForWooCommerceAdmin {
         $product_data = sanitize_text_field(stripslashes($_POST['sdwc_product_stock_dependency']));
         if ($this->validate_product_data($product_data)) {
           /*
-           * Save the stock dependency data in the meta field for the product without the dependency's
-           * product ID
+           * Save the stock dependency data in the meta field for the product
+           * without the dependency's product ID
            */
           $product->update_meta_data('_stock_dependency', $product_data);
           /*
-           * Save the stock dependency data in a transient for the product with the dependency's
-           * product ID
+           * Save the stock dependency data in a transient for the product with
+           * the dependency's product ID
            */
           $this->save_dependency_transient($product, $product_data);
           return true;
@@ -235,14 +235,14 @@ namespace StockDependenciesForWooCommerceAdmin {
         $product_data = sanitize_text_field(stripslashes($_POST['sdwc_variation_stock_dependency-' . $i]));
         if ($this->validate_product_data($product_data)) {
           /*
-           * Save the stock dependency data in the meta field for the product without the dependency's
-           * product ID
+           * Save the stock dependency data in the meta field for the product
+           * without the dependency's product ID
            */
           $variation->update_meta_data('_stock_dependency', $product_data);
           $variation->save();
           /*
-           * Save the stock dependency data in a transient for the product with the dependency's
-           * product ID
+           * Save the stock dependency data in a transient for the product with
+           * the dependency's product ID
            */
           $this->save_dependency_transient($variation, $product_data);
           return true;
@@ -271,8 +271,8 @@ namespace StockDependenciesForWooCommerceAdmin {
      * 
      * @parm WC_Product $product
      * 
-     * Get the stock dependency settings from transient if it exists and from the
-     * product meta table if there is no transient
+     * Get the stock dependency settings from transient if it exists and from
+     * the product meta table if there is no transient
      * 
      */
 
@@ -287,7 +287,8 @@ namespace StockDependenciesForWooCommerceAdmin {
         $stock_dependency_settings = json_decode($transient_value);
       } else if (false !== ($stock_dependency_settings_string = $this->get_stock_dependency_meta($product))) {
         /**
-         * Get the stock dependency data from the post meta and create the transient
+         * Get the stock dependency data from the post meta and create the
+         * transient
          */
         $this->save_dependency_transient($product, $stock_dependency_settings_string);
         $stock_dependency_settings = json_decode($stock_dependency_settings_string);
@@ -325,9 +326,10 @@ namespace StockDependenciesForWooCommerceAdmin {
      * @param int $quantity
      * @param WC_Product $product
      * 
-     * Get the stock quantity of the product/variation by checking the stock quanties of the 
-     * dependency products/variations and using the minimum of those. If there are no dependency
-     * products/variations then simply return the product's/variation's actual quantity
+     * Get the stock quantity of the product/variation by checking the stock
+     * quanties of the dependency products/variations and using the minimum of
+     * those. If there are no dependency products/variations then simply return
+     * the product's/variation's actual quantity
      * 
      */
 
@@ -363,9 +365,10 @@ namespace StockDependenciesForWooCommerceAdmin {
      * @param bool $is_in_stock
      * @param WC_Product $product
      * 
-     * Get the in-stock status of the product/variation by checking the stock levels of the 
-     * dependency products/variations. If there are no stock dependency settings then simply return
-     * the product's/variation's actual in-stock status
+     * Get the in-stock status of the product/variation by checking the stock
+     * levels of the dependency products/variations. If there are no stock
+     * dependency settings then simply return the product's/variation's actual
+     * in-stock status
      * 
      */
 
@@ -373,18 +376,19 @@ namespace StockDependenciesForWooCommerceAdmin {
     {
       if ($product->is_type('variable') && $product->has_child() && !$product->managing_stock()) {
         /**
-         *  If the product type is variable, and the product has children (i.e. variations)
-         *  and stock is not being managed at the product level (i.e. it is possibly being
-         *  managed at the variation level) then check to see if there are stock dependencies
-         *  for each of the variations that affect the stock status
+         *  If the product type is variable, and the product has children (i.e.
+         *  variations) and stock is not being managed at the product level
+         *  (i.e. it is possibly being managed at the variation level) then
+         *  check to see if there are stock dependencies for each of the
+         *  variations that affect the stock status
          */
         foreach ($product->get_children() as $key => $variation_id) {
           $variation = wc_get_product($variation_id);
           if ($variation->is_type('variation') && $variation->managing_stock()) {
             // $variation_check = $variation->is_in_stock();
             if ($variation->is_in_stock() || $variation->backorders_allowed()) {
-              /** if there is at least one variation that has stock then we will consider
-               *  the variable product to be instock
+              /** if there is at least one variation that has stock then we will
+               *  consider the variable product to be instock
                */
               $is_in_stock = true;
               break;
@@ -392,9 +396,10 @@ namespace StockDependenciesForWooCommerceAdmin {
           }
         }
         /**
-         *  Updated the stock_status value for the variable product as sometimes the stock_status
-         *  in the DB gets out of sync e.g. when any of the products or variations on which this 
-         *  product depends has had its stock depleted
+         *  Updated the stock_status value for the variable product as sometimes
+         *  the stock_status in the DB gets out of sync e.g. when any of the
+         *  products or variations on which this product depends has had its
+         *  stock depleted
          */
         if ($is_in_stock) {
           $product->set_stock_status('instock');
@@ -403,14 +408,15 @@ namespace StockDependenciesForWooCommerceAdmin {
         }
       } else if (($product->is_type('simple') || $product->is_type('variation')) && $product->managing_stock()) {
         /**
-         * if the product is either a simple product or a product variation then and
-         * inventory is being managed then check if there are stock dependencies that
-         * affect the stock status
+         * if the product is either a simple product or a product variation then
+         * and inventory is being managed then check if there are stock
+         * dependencies that affect the stock status
          */
         if ($this->has_stock_dependencies($product)) {
           $stock_dependency_settings = $this->get_stock_dependency_settings($product);
           $dependency_is_in_stock = true;
-          // product has stock dependencies so check each dependency to see if in stock
+          // product has stock dependencies so check each dependency to see if
+          // in stock
           foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
             if ($stock_dependency->product_id) {
               if (wc_get_product($stock_dependency->product_id)) {
@@ -419,23 +425,26 @@ namespace StockDependenciesForWooCommerceAdmin {
                 if (intdiv($dependency_product_available, $stock_dependency->qty) <= 0 && !$dependency_product->backorders_allowed()) {
                   $dependency_is_in_stock = false;
                   /**
-                   * if there is at least one dependency that is not in stock then we will consider
-                   * the product or variation to be outofstock
+                   * if there is at least one dependency that is not in stock
+                   * then we will consider the product or variation to be
+                   * outofstock
                    */
                 }
               } else {
                 $dependency_is_in_stock = false;
-                /** if we cannot get the product or variation dependency by SKU then we will consider
-                 *  the product or variation to be outofstock
+                /** if we cannot get the product or variation dependency by SKU
+                 *  then we will consider the product or variation to be
+                 *  outofstock
                  */
               }
             }
           }
           $is_in_stock = $dependency_is_in_stock;
         }
-        /** updated the stock_status value for the variable product as sometimes the stock_status
-         *  in the DB gets out of sync e.g. when any of the products or variations on which this 
-         *  product depends has had its stock depleted
+        /** updated the stock_status value for the variable product as sometimes
+         *  the stock_status in the DB gets out of sync e.g. when any of the
+         *  products or variations on which this product depends has had its
+         *  stock depleted
          */
         if ($is_in_stock) {
           $product->set_stock_status('instock');
@@ -453,9 +462,10 @@ namespace StockDependenciesForWooCommerceAdmin {
      * 
      * hook filter: woocommerce_product_variation_get_stock_status
      * 
-     * Get the stock status of the product/variation by checking the stock statuses of the 
-     * dependency products/variations. If there are no dependency products/variations then simply
-     * return the product's/variation's actual stock status
+     * Get the stock status of the product/variation by checking the stock
+     * statuses of the dependency products/variations. If there are no
+     * dependency products/variations then simply return the
+     * product's/variation's actual stock status
      * 
      */
 
@@ -491,11 +501,12 @@ namespace StockDependenciesForWooCommerceAdmin {
      * @param WC_Order $order
      * 
      * This action hook is called after the stock has been reduced for the order
-     * being checked out. This function will reduce the inventory of the dependency
-     * stock items by the number of items in the order times the number of dependency
-     * stock for that item. Note that if the item in the order being checked out 
-     * has dependency products, then the WooCommerce function wc_reduce_order_stock
-     * will set the inventory quantity of that product to zero (0).
+     * being checked out. This function will reduce the inventory of the
+     * dependency stock items by the number of items in the order times the
+     * number of dependency stock for that item. Note that if the item in the
+     * order being checked out has dependency products, then the WooCommerce
+     * function wc_reduce_order_stock will set the inventory quantity of that
+     * product to zero (0).
      * 
      */
 
@@ -516,8 +527,8 @@ namespace StockDependenciesForWooCommerceAdmin {
           if ($this->has_stock_dependencies($order_product)) {
             $stock_dependency_settings = $this->get_stock_dependency_settings($order_product);
             $order_item_qty = $item->get_quantity();
-            // for each stock dependency sku, decrease the stock by the correct amount
-            // and create a note on the order
+            // for each stock dependency sku, decrease the stock by the correct
+            // amount and create a note on the order
             foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
               if ($stock_dependency->product_id) {
                 $dependency_product = wc_get_product($stock_dependency->product_id);
@@ -559,10 +570,10 @@ namespace StockDependenciesForWooCommerceAdmin {
             // reset the ordered item stock level
             $this->reset_product_stock_quantity($order_product, $order);
 
-            // Add the stock dependency settings to the order item so that if a return
-            // is processed we will know the stock dependency settings that were used
-            // for this order item and not assume that the stock dependency settings 
-            // have not changed
+            // Add the stock dependency settings to the order item so that if a
+            // return is processed we will know the stock dependency settings
+            // that were used for this order item and not assume that the stock
+            // dependency settings have not changed
             if (!$item->meta_exists('_stock_dependency')) {
               $add_order_item_meta = wc_add_order_item_meta(
                 $item->get_id(),
@@ -681,8 +692,8 @@ namespace StockDependenciesForWooCommerceAdmin {
      * 
      * @param int $order_id
      * 
-     * If an order is cancelled then restock the stock dependency items excluding
-     * any that have already been restocked due to a refund
+     * If an order is cancelled then restock the stock dependency items
+     * excluding any that have already been restocked due to a refund
      * 
      */
 
@@ -756,9 +767,10 @@ namespace StockDependenciesForWooCommerceAdmin {
      * @param WC_Product $product
      * @param WC_Order $order
      * 
-     * Reset the ordered item stock level to the new value by calculating the stock available for
-     * dependencies. note that this value will only appear in the admin site as the stock quantity
-     * is always recalculated for the shop.
+     * Reset the ordered item stock level to the new value by calculating the
+     * stock available for dependencies. note that this value will only appear
+     * in the admin site as the stock quantity is always recalculated for the
+     * shop.
      * 
      */
 
@@ -811,7 +823,8 @@ namespace StockDependenciesForWooCommerceAdmin {
      * @param object $item
      * @param object $product
      * 
-     * When viewing the order in admin, display any stock dependiencies for each item in the order
+     * When viewing the order in admin, display any stock dependiencies for each
+     * item in the order
      * 
      */
 
@@ -945,10 +958,10 @@ namespace StockDependenciesForWooCommerceAdmin {
         <h2>Remove Stock Dependency Plugin DB Transients</h2>
         <p>This plugin uses WordPress transients to store some stock dependency
           settings for each product, in order to improve performance. These will
-          be automatically cleaned up by WordPress and recreated by the pluing as
-          needed, but if your site is not working correctly you can remove the
-          plugin transients. Doing this will not break anything but your site
-          might perform slower until the transients are recreated when each
+          be automatically cleaned up by WordPress and recreated by the pluing
+          as needed, but if your site is not working correctly you can remove
+          the plugin transients. Doing this will not break anything but your
+          site might perform slower until the transients are recreated when each
           product is viewed in your store.</p>
         <a class="submit button button-primary" href="tools.php?page=stock-dependencies-settings&clear-transients=true">Clear Plugin Transients</a>
         <?php
