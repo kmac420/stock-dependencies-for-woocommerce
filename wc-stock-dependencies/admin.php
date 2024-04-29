@@ -953,6 +953,13 @@ namespace StockDependenciesForWooCommerceAdmin {
     public function settings_page_html()
     {
 ?>
+      <?php
+
+      $clear_transients = filter_input(INPUT_GET, "clear-transients");
+      $check_dependencies = filter_input(INPUT_GET, "check-dependencies");
+      $sku = filter_input(INPUT_GET, "sku");
+
+      ?>
       <div class="wrap">
         <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
         <h2>Remove Stock Dependency Plugin DB Transients</h2>
@@ -965,10 +972,61 @@ namespace StockDependenciesForWooCommerceAdmin {
           product is viewed in your store.</p>
         <a class="submit button button-primary" href="tools.php?page=stock-dependencies-settings&clear-transients=true">Clear Plugin Transients</a>
         <?php
-        $clear_transients = filter_input(INPUT_GET, "clear-transients");
-
         if ($clear_transients) {
           $this->delete_all_stock_dependency_transients();
+        }
+        ?>
+        <h2>Check Stock Dependencies</h2>
+        <p>Check the stock dependencies for a product by inputting the product
+          SKU and click the "Check" button. The plugin will use the configured
+          stock dependencies and will determine the available inventory based
+          on the dependencies the same way it is calculated in your store.</p>
+        <form action="/wp-admin/tools.php?page=stock-dependencies-settings&check-dependencies=true">
+          <label for="sku">Product SKU:</label><br>
+          <input type="text" id="sku" name="sku" />
+          <input type="hidden" id="page" name="page" value="stock-dependencies-settings">
+          <input type="hidden" id="check-dependencies" name="check-dependencies" value="true">
+          <p>
+            <input type="submit" value="Check" class="submit button button-primary">
+          </p>
+        </form>
+        <?php
+        if ($check_dependencies) {
+          if ($product = $this->get_product_by_sku($sku)) {
+            if ($stock_dependency_settings = $this->get_stock_dependency_settings($product)) {
+              echo ("<strong>Product</strong><br />");
+              echo ("Product name: <a href=\"/wp-admin/post.php?post=");
+              echo ($product->is_type('variation') ? $product->get_parent_id() : $product->get_id());
+              echo ("&action=edit\">" . $product->get_name() . "</a><br />");
+              echo ("Product SKU: " . $product->get_sku() . "<br />");
+              echo ("Dependencies enabled: ");
+              echo ($stock_dependency_settings->enabled ? 'true' : 'false');
+              echo ("<br />");
+              echo ("Calculated inventory: " . $this->product_get_stock_quantity(1, $product) . "<br />");
+              foreach ($stock_dependency_settings->stock_dependency as $key => $stock_dependency) {
+                echo ("<div style=\"margin:20px;\">");
+                echo ("<strong>Dependency #" . $key + 1 . "</strong><br />");
+                if ($dependency_product = $this->get_product_by_sku($stock_dependency->sku)) {
+                  echo ("Dependency name: <a href=\"/wp-admin/post.php?post=");
+                  echo ($dependency_product->is_type('variation') ? $dependency_product->get_parent_id() : $dependency_product->get_id());
+                  echo ("&action=edit\">" . $dependency_product->get_name() . "</a><br />");
+                  // echo ("Dependency name: " . $dependency_product->get_name() . "<br />");
+                  echo ("Dependency SKU: " . $dependency_product->get_sku() . "<br />");
+                  // echo ("Dependency ID: " . $dependency_product->get_id() . "<br />");
+                  echo ("Dependency quantity: " . $stock_dependency->qty . "<br />");
+                  echo ("Dependency inventory: " . $dependency_product->get_stock_quantity() . "<br />");
+                }
+                echo ("</div>");
+              }
+            } else {
+              echo ("There are no stock dependencies for product ");
+              echo ("<a href=\"/wp-admin/post.php?post=");
+              echo ($product->is_type('variation') ? $product->get_parent_id() : $product->get_id());
+              echo ("&action=edit\">" . $product->get_name() . "</a><br />");
+            }
+          } else {
+            echo ("There is no product with SKU: " . $sku . "<br />");
+          }
         }
         ?>
         <?php
