@@ -339,20 +339,19 @@ namespace StockDependenciesForWooCommerceAdmin {
         $stock_dependency_settings = $this->get_stock_dependency_settings($product);
         foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
           if ($stock_dependency->sku) {
-            if (wc_get_product($stock_dependency->product_id)) {
-              $dependency_product = wc_get_product($stock_dependency->product_id);
-              if ($dependency_product) {
-                $dependency_product_available = $dependency_product->get_stock_quantity();
-                if (!isset($temp_stock_quantity)) {
-                  $temp_stock_quantity = intdiv($dependency_product_available, $stock_dependency->qty);
-                } else {
-                  $temp_stock_quantity = min($temp_stock_quantity, intdiv($dependency_product_available, $stock_dependency->qty));
-                }
-              }
-            } else {
-              $temp_stock_quantity = 0;
-              break;
-            }
+			$dependency_product           = wc_get_product( $stock_dependency->product_id );
+			$dependency_product_available = $dependency_product ? $dependency_product->get_stock_quantity() : 0;
+			
+			if ( is_numeric( $dependency_product_available ) ) {
+				if ( ! isset( $temp_stock_quantity ) ) {
+					$temp_stock_quantity = intdiv( absint( $dependency_product_available ), $stock_dependency->qty );
+				} else {
+					$temp_stock_quantity = min( $temp_stock_quantity, intdiv( absint( $dependency_product_available ), $stock_dependency->qty ) );
+				}
+			} else {
+				$temp_stock_quantity = 0;
+				break;
+			}
           }
         }
         $quantity = $temp_stock_quantity;
@@ -418,25 +417,26 @@ namespace StockDependenciesForWooCommerceAdmin {
           // product has stock dependencies so check each dependency to see if
           // in stock
           foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
-            if ($stock_dependency->product_id) {
-              if (wc_get_product($stock_dependency->product_id)) {
-                $dependency_product = wc_get_product($stock_dependency->product_id);
-                $dependency_product_available = $dependency_product->get_stock_quantity();
-                if (intdiv($dependency_product_available, $stock_dependency->qty) <= 0 && !$dependency_product->backorders_allowed()) {
-                  $dependency_is_in_stock = false;
-                  /**
-                   * if there is at least one dependency that is not in stock
-                   * then we will consider the product or variation to be
-                   * outofstock
-                   */
-                }
-              } else {
-                $dependency_is_in_stock = false;
-                /** if we cannot get the product or variation dependency by SKU
-                 *  then we will consider the product or variation to be
-                 *  outofstock
-                 */
-              }
+            if ( $stock_dependency->product_id ) {
+				$dependency_product           = wc_get_product( $stock_dependency->product_id );
+            	$dependency_product_available = $dependency_product ? $dependency_product->get_stock_quantity() : 0;
+				
+				if ( is_numeric( $dependency_product_available ) ) {
+					if ( intdiv( absint( $dependency_product_available ), $stock_dependency->qty ) <= 0 && ! $dependency_product->backorders_allowed() ) {
+						$dependency_is_in_stock = false;
+						/**
+						 * if there is at least one dependency that is not in stock
+						 * then we will consider the product or variation to be
+						 * outofstock
+						 */
+					}
+				} else {
+					$dependency_is_in_stock = false;
+					/** if we cannot get the product or variation dependency by SKU
+					 *  then we will consider the product or variation to be
+					 *  outofstock
+					 */
+				}
             }
           }
           $is_in_stock = $dependency_is_in_stock;
@@ -474,18 +474,20 @@ namespace StockDependenciesForWooCommerceAdmin {
       if ($this->has_stock_dependencies($product)) {
         $stock_dependency_settings = $this->get_stock_dependency_settings($product);
         foreach ($stock_dependency_settings->stock_dependency as $stock_dependency) {
-          if ($stock_dependency->product_id) {
-            if (wc_get_product($stock_dependency->product_id)) {
-              $dependency_product = wc_get_product($stock_dependency->product_id);
-              $dependency_product_available = $dependency_product->get_stock_quantity();
-              if (intdiv($dependency_product_available, $stock_dependency->qty) <= 0) {
-                if ($dependency_product->backorders_allowed()) {
-                  $status = "onbackorder";
-                } else {
-                  $status = "outofstock";
-                }
-              }
-            }
+          if ( $stock_dependency->product_id ) {
+			$dependency_product           = wc_get_product( $stock_dependency->product_id );
+			$dependency_product_available = $dependency_product ? $dependency_product->get_stock_quantity() : 0;
+            
+			if ( is_numeric( $dependency_product_available ) && intdiv( absint( $dependency_product_available ), $stock_dependency->qty ) <= 0 ) {
+				if ( $dependency_product->backorders_allowed() ) {
+					$status = "onbackorder";
+				} else {
+					$status = "outofstock";
+				}
+            } else {
+				$status = "outofstock";
+				break;
+			}
           } else {
             $status = "outofstock";
             break;
