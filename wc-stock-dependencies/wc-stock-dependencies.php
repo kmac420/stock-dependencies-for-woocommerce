@@ -24,6 +24,8 @@ namespace StockDependenciesForWooCommerce {
       \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
     }
   });
+  
+  update_option( 'wcsd_version', '1.6.2' );
 
   add_action('admin_menu', array(new Admin\Admin(), 'settings_page'));
   add_action('woocommerce_product_options_inventory_product_data', array(new Admin\Admin(), 'product_options_inventory_product_data'), 10, 1);
