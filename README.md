@@ -232,3 +232,57 @@ and variable products that are configured to allow backorders. In order to allow
 backorders on simple or variable products that have stock dependencies on other
 simple and/or variable products, you **must** enable backorders for the products
 on which there is a dependency **and** the product that has the dependency.
+
+## Development and Testing
+
+### Setting Up the Development Environment
+
+1. Install Composer (PHP package manager) if you haven't already:
+   - macOS: `brew install composer`
+   - Windows: Download and run the installer from [getcomposer.org](https://getcomposer.org/download/)
+   - Linux: `curl -sS https://getcomposer.org/installer | php && sudo mv composer.phar /usr/local/bin/composer`
+
+2. Install dependencies:
+   ```bash
+   cd wc-stock-dependencies
+   composer install
+   ```
+
+### Running Tests
+
+The plugin includes comprehensive unit tests for all major functionality. To run the tests:
+
+1. Set up the WordPress test environment:
+   ```bash
+   bash bin/install-wp-tests.sh wordpress_test root '' localhost latest
+   ```
+
+2. Run the test suite:
+   ```bash
+   cd wc-stock-dependencies
+   composer test
+   ```
+
+3. To generate a code coverage report:
+   ```bash
+   composer test:coverage
+   ```
+   The coverage report will be generated in the `coverage` directory.
+
+### Test Coverage
+
+The test suite covers:
+- Simple product stock dependencies
+- Variable product stock dependencies
+- Order processing and stock management
+- Stock status calculations
+- Inventory updates during order processing
+- Refund and cancellation handling
+
+### Contributing
+
+When contributing to the project, please ensure:
+1. All new features include appropriate test coverage
+2. Existing tests pass before submitting a pull request
+3. Code follows the WordPress coding standards
+4. Documentation is updated to reflect any changes

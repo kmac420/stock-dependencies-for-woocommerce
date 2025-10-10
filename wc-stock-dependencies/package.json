@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@wordpress/env": "^10.17.0"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "core": null,
+  "plugins": [
+    ".",
+    "../woocommerce/plugins/woocommerce"
+  ],
+  "env": {
+    "tests": {
+      "port": 8889,
+      "mappings": {
+        "wp-content/plugins/wc-stock-dependencies": "."
+      }
+    }
+  },
+  "config": {
+    "WP_DEBUG": true,
+    "SCRIPT_DEBUG": true,
+    "WP_PHP_BINARY": "php",
+    "WP_TESTS_EMAIL": "admin@example.org",
+    "WP_TESTS_TITLE": "Test Blog",
+    "WP_TESTS_DOMAIN": "localhost",
+    "WP_TESTS_INSTALL_DIR": "/var/www/html"
+  }
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    bootstrap="tests/bootstrap.php"
+    backupGlobals="false"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    verbose="true"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+    <testsuites>
+        <testsuite name="stock-dependencies-tests">
+            <directory suffix=".php">./tests</directory>
+            <exclude>./tests/bootstrap.php</exclude>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="WP_TESTS_DIR" value="/var/folders/fb/06hzwlys0q91566xp75gj6yc0000gn/T/wordpress-tests-lib"/>
+        <env name="WP_CORE_DIR" value="/var/folders/fb/06hzwlys0q91566xp75gj6yc0000gn/T/wordpress/"/>
+        <env name="WP_TESTS_PHPUNIT_POLYFILLS_PATH" value="vendor/yoast/phpunit-polyfills"/>
+        <env name="WC_TAX_ROUNDING_MODE" value="auto"/>
+        <env name="WC_USE_TRANSACTIONS" value="0"/>
+    </php>
+    <coverage>
+        <include>
+            <directory suffix=".php">.</directory>
+        </include>
+        <exclude>
+            <directory>./tests</directory>
+            <directory>./vendor</directory>
+            <directory>./views</directory>
+        </exclude>
+    </coverage>
+</phpunit>
