@@ -2,8 +2,8 @@
 Contributors: KevinMcCall
 Tags: woocommerce,product,inventory,group,dependency
 Requires at least: 5.0
-Tested up to: 6.5
-Stable tag: 1.6.2
+Tested up to: 6.8
+Stable tag: 2.0.0
 Requires PHP: 7.0
 License: MIT
 License URI: https://github.com/kmac420/stock-dependencies-for-woocommerce/blob/master/LICENSE
@@ -131,6 +131,10 @@ variation on which the dependency exists.
 3. The inventory of each product dependency is automatically reduced by the appropriate number based on the order quantity and the dependency quantity.
 
 == Changelog ==
+
+= 2.0.0 =
+* Adds unit tests
+* Fixes some known bugs
 
 = 1.6.2 =
 * Adds an admin tool to check dependencies

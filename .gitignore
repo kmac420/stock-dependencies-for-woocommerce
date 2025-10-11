@@ -1,2 +1,4 @@
 .DS_Store
 .vscode
+wc-stock-dependencies/node_modules
+wc-stock-dependencies/vendor

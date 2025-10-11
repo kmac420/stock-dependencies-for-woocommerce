@@ -122,8 +122,14 @@ class AdminComplexTest extends \WP_Mock_Test_Case
     {
         global $wpdb;
 
-        // Create a mock wpdb object with the get_results method
+        // Create a mock wpdb object with the get_results and prepare methods
         $wpdb = new class {
+            public $postmeta = 'wp_postmeta';
+
+            public function prepare($query, ...$args) {
+                return "SELECT post_id, meta_value FROM wp_postmeta WHERE meta_key = '_stock_dependency'";
+            }
+
             public function get_results($query) {
                 return [
                     (object)['post_id' => 42, 'meta_value' => '{"enabled":true,"stock_dependency":[{"sku":"test-sku","qty":2}]}']

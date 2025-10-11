@@ -37,13 +37,23 @@ class StockDependenciesForWooCommerce {
     let p = document.createElement("P");
     p.className = "sdwc_error_message_p";
     p.id = "sdwc_error_message_p";
-    if (errorCode == "sku-error") {
-      document.createTextNode(
-        "Error: stock dependency SKU cannot be the same as the product SKU."
-      );
-    } else {
-      document.createTextNode("Error: unknown error.");
-    }
+    let textNode;
+
+    // Specific error messages for different validation failures
+    const errorMessages = {
+      "sku-error": "Error: Stock dependency SKU cannot be the same as the product SKU.",
+      "sku-empty": "Error: Stock dependency SKU cannot be empty.",
+      "sku-not-found": "Error: Stock dependency SKU not found in your store.",
+      "qty-invalid": "Error: Quantity must be a positive integer (1 or greater).",
+      "qty-zero": "Error: Quantity cannot be zero.",
+      "duplicate-sku": "Error: This SKU is already added as a dependency.",
+      "circular-dependency": "Error: Product cannot depend on itself.",
+    };
+
+    textNode = document.createTextNode(
+      errorMessages[errorCode] || "Error: An unknown error occurred. Please check your input and try again."
+    );
+
     p.appendChild(textNode);
     d.appendChild(p);
     // create the message dismissal button and append it to the div
@@ -417,6 +427,13 @@ class StockDependenciesForWooCommerce {
     input.id = "sdwc_product_stock_dependency-" + y + "-qty";
     input.onchange = (function () {
       return function () {
+        // Validate quantity is at least 1
+        if (this.value < 1 || this.value === "" || this.value === "0") {
+          this.value = 1;
+          this.setAttribute("style", "border: 1px solid red;");
+        } else {
+          this.setAttribute("style", "border: 1px solid #7e8993;");
+        }
         wooCommerceStockDependencies.productOnChange();
       };
     })();
@@ -456,6 +473,13 @@ class StockDependenciesForWooCommerce {
     input.id = "sdwc_variation_stock_dependency-" + x + "-" + y + "-qty";
     input.onchange = (function (x) {
       return function () {
+        // Validate quantity is at least 1
+        if (this.value < 1 || this.value === "" || this.value === "0") {
+          this.value = 1;
+          this.setAttribute("style", "border: 1px solid red;");
+        } else {
+          this.setAttribute("style", "border: 1px solid #7e8993;");
+        }
         wooCommerceStockDependencies.variationOnChange(this);
       };
     })(x);
