@@ -1,0 +1,43 @@
+{
+  "name": "kmac420/stock-dependencies-for-woocommerce",
+  "description": "Make the products and variations in your WooCommerce store dependent on the inventory of your other products or variations.",
+  "type": "wordpress-plugin",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Kevin McCall",
+      "email": "kevin@kef.ca"
+    }
+  ],
+  "require": {
+    "php": ">=7.2"
+  },
+  "require-dev": {
+    "10up/wp_mock": "^0.4.2",
+    "phpunit/phpunit": "^9.0",
+    "mockery/mockery": "^1.4",
+    "squizlabs/php_codesniffer": "*",
+    "wp-coding-standards/wpcs": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "StockDependenciesForWooCommerce\\": "./",
+      "StockDependenciesForWooCommerceAdmin\\": "./"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "StockDependenciesForWooCommerce\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "phpcs": "phpcs --standard=phpcs.xml",
+    "phpcbf": "phpcbf --standard=phpcs.xml"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
+}
