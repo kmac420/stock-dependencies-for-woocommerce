@@ -133,8 +133,10 @@ variation on which the dependency exists.
 == Changelog ==
 
 = 2.0.0 =
+* Verified with WordPress 6.8
 * Adds unit tests
 * Fixes some known bugs
+* Refactored some code and added error handling
 
 = 1.6.2 =
 * Adds an admin tool to check dependencies
